@@ -10,7 +10,7 @@ DEMOS = \
 	demo-TNodeNet demo-TNodeEDatNet demo-TNodeEdgeNet \
         demo-TNEANet \
 	demo-subgraph demo-ggen \
-	demo-gio demo-gviz \
+	demo-gio demo-gviz demo-pagerank \
 	demo-cncom demo-cncom1 demo-bfsdfs \
 	demo-triad \
 	demo-THash \

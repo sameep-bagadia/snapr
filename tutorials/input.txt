@@ -1,0 +1,11 @@
+2 4
+nodes1.txt
+nodes2.txt
+edges11.txt
+0 0
+edges12.txt
+0 1
+edges22.txt
+1 1
+edges21.txt
+1 0
