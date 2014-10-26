@@ -10,12 +10,14 @@ DEMOS = \
 	demo-TNodeNet demo-TNodeEDatNet demo-TNodeEdgeNet \
         demo-TNEANet \
 	demo-subgraph demo-ggen \
-	demo-gio demo-gviz demo-pagerank \
+	demo-gio demo-gviz  \
 	demo-cncom demo-cncom1 demo-bfsdfs \
 	demo-triad \
 	demo-THash \
 	demo-topology-benchmark \
 	demo-hashvec-benchmark \
+	demo-pagerank demo-undirected-pagerank demo-undirected-pagerank_dumb \
+	demo-test_table \
 	\
 
 all: $(DEMOS)
