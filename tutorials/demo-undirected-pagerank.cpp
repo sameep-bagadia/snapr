@@ -236,7 +236,7 @@ int main(int argc, char* []) {
     for (int i = 0; i < Result.Len(); i++) {
         printf("Node table #%d:\n", i);
         for (int j = 0; j < Result[i]->GetNumRows(); j++) {
-            printf("NodeID = %d, Pagerank score = %f\n", (Result[i]->GetIntVal("NodeID", j)).Val, (Result[i]->GetFltVal("Pagerank", j)).Val);
+            printf("NodeID = %s, Degree = %d, Pagerank score = %f\n", (Result[i]->GetStrVal("NodeID", j)).CStr(), Result[i]->GetIntVal("OutDeg", j).Val, (Result[i]->GetFltVal("Pagerank", j)).Val);
         }
         printf("\n");
     }

@@ -1,55 +1,7 @@
 #include "Snap.h"
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <iostream>
-#include <stdio.h>
-#include <proc/readproc.h>
-#include <fstream>
-
-using namespace std;
-
+//using namespace TSnap;
 typedef TVec<PTable> PTableV;
 typedef TVec<TIntPr > TIntPrV;
-
-
-/**************************Benchmark Functions*****************************/
-
-float getcputime() {
-  struct rusage rusage;
-  float result;
-  
-  getrusage(RUSAGE_SELF, &rusage);
-  
-  result =
-  ((float) (rusage.ru_utime.tv_usec + rusage.ru_stime.tv_usec) / 1000000) +
-  ((float) (rusage.ru_utime.tv_sec + rusage.ru_stime.tv_sec));
-  return result;
-}
-
-void getcpumem(float *scpu, float *smem) {
-  struct rusage rusage;
-  struct proc_t usage;
-  
-  getrusage(RUSAGE_SELF, &rusage);
-  *scpu =
-  ((float) (rusage.ru_utime.tv_usec + rusage.ru_stime.tv_usec) / 1000000) +
-  ((float) (rusage.ru_utime.tv_sec + rusage.ru_stime.tv_sec));
-  
-  look_up_our_self(&usage);
-  *smem = (float) usage.vsize / 1000000;
-}
-
-void getmaxcpumem(float *scpu, float *smem) {
-  struct rusage rusage;
-  
-  getrusage(RUSAGE_SELF, &rusage);
-  *scpu =
-  ((float) (rusage.ru_utime.tv_usec + rusage.ru_stime.tv_usec) / 1000000) +
-  ((float) (rusage.ru_utime.tv_sec + rusage.ru_stime.tv_sec));
-  *smem = (float) (rusage.ru_maxrss) / 1000;
-}
-
-/***************************************************************************/
 
 
 //Function to read a table of nodes
@@ -86,6 +38,27 @@ PTable AddEdgeTable(TTableContext& Context) {
   }
   TStr FName(FileName);
   PTable T = TTable::LoadSS(EdgeScm, FName, Context);
+  return T;
+}
+
+// Function to read in a table of edges in reverse direction as it is undirected graph. So each edge is read in both direction
+PTable AddReverseEdgeTable(TTableContext & Context) {
+  //TTableContext Context;
+  Schema Edges;
+  //Just named the first list as dstid and second one as srcid to solve the purpose of reversing
+  Edges.Add(TPair<TStr, TAttrType>("DstID", atStr));
+  Edges.Add(TPair<TStr, TAttrType>("SrcID", atStr));
+  char filename[200];
+  int col_count;
+  printf("Adding Edge Table\n");
+  printf("Enter filename and number of columns (>= 2)\n");
+  scanf("%s %d", filename, &col_count);
+  for (TInt i = 1; i < col_count-1; i++) {
+    TStr ColName = "Attribute" + i.GetStr();
+    Edges.Add(TPair<TStr, TAttrType>(ColName, atStr));
+  }
+  TStr FName(filename);
+  PTable T = TTable::LoadSS(Edges, FName, Context);
   return T;
 }
 
@@ -134,8 +107,8 @@ void IteratePRank(const PTableV& NTables, const PTableV& ETables, const TIntPrV&
             if (CurrNode == ETables[EType]->GetStrVal("SrcID", EId)) {
               //add to the pagerank score
               TStr InNode = ETables[EType]->GetStrVal("DstID", EId);
-              int InNodeId = (NodeHash[Mapping[EType].Val2].GetDat(InNode)).Val;
-              PRank[NType][NodeID] += (d * OldPR[Mapping[EType].Val2][InNodeId]) / (NTables[Mapping[EType].Val2]->GetIntVal("OutDeg", InNodeId)).Val;
+              int InNodeId = (NodeHash[Mapping[EType].Val1].GetDat(InNode)).Val;
+              PRank[NType][NodeID] += (d * OldPR[Mapping[EType].Val1][InNodeId]) / (NTables[Mapping[EType].Val1]->GetIntVal("OutDeg", InNodeId)).Val;
             }
           }
         }
@@ -163,6 +136,7 @@ void GetPagerankMM(const PTableV& NTables,const PTableV& ETables,const TIntPrV& 
     NodeCnt += NTables[i]->GetNumRows();
   }
   printf("%d\n", NodeCnt);
+  return;
   float PRInit = 1.0 / float(NodeCnt);
   
   //Initialize pagerank value for each node as 1/N
@@ -187,11 +161,9 @@ void GetPagerankMM(const PTableV& NTables,const PTableV& ETables,const TIntPrV& 
   
   //Run pagerank for some iterations
   int IterCnt = 10;
-  //PrintPRank(PRank);
   for (int i = 0; i < IterCnt; i++) {
     printf("Starting pagerank iteration number: %d\n", i);
     IteratePRank(NTables, ETables, Mapping, PRank, NodeHash, NodeCnt);
-    //PrintPRank(PRank);
   }
   
   //Print the final pagerank values
@@ -233,16 +205,12 @@ void CalcOutDeg(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping
     int EdgeCnt = (ETables[i]->GetNumRows()).Val;
     printf("# of edges = %d\n", EdgeCnt);
     for (int j = 0; j < EdgeCnt; j++) {
-      TStr Key1 = ETables[i]->GetStrVal("SrcID", j);
-      int tempval1 = OutDeg[SrcTbl].GetDat(Key1);
-      OutDeg[SrcTbl].AddDat(Key1, tempval1+1);
-      //printf("nodes%d, id = %s, new_val = %d\n", SrcTbl, (ETables[i]->GetStrVal("SrcID", j)).CStr(), (OutDeg[SrcTbl].GetDat(Key1)).Val);
+      TStr Key = ETables[i]->GetStrVal("SrcID", j);
+      int tempval = OutDeg[SrcTbl].GetDat(Key);
+      //OutDeg[SrcTbl].DelKey(Key);
+      OutDeg[SrcTbl].AddDat(Key, tempval+1);
       
-      TStr Key2 = ETables[i]->GetStrVal("DstID", j);
-      int tempval2 = OutDeg[DstTbl].GetDat(Key2);
-      OutDeg[DstTbl].AddDat(Key2, tempval2+1);
-      
-      //printf("nodes%d, id = %s, new_val = %d\n", DstTbl, (ETables[i]->GetStrVal("DstID", j)).CStr(), (OutDeg[DstTbl].GetDat(Key2)).Val);
+      //printf("nodes%d, id = %d, new_val = %d\n", SrcTbl, (ETables[i]->GetIntVal("SrcID", j)).Val, (OutDeg[SrcTbl].GetDat(Key)).Val);
     }
   }
   printf("Outdegrees calculated\n");
@@ -257,23 +225,9 @@ void CalcOutDeg(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping
   printf("Outdegrees stored\n");
 }
 
-void PrintBenchmarks(ofstream& outfile) {
-  float scpu, smem, maxscpu, maxsmem, cputime;
-  cputime = getcputime();
-  getcpumem(&scpu, &smem);
-  getmaxcpumem(&maxscpu, &maxsmem);
-  outfile << cputime << " " << scpu << " " << smem << " " << maxscpu << " " << maxsmem << "\n";
-}
-
 
 
 int main(int argc, char* []) {
-  
-  ofstream outfile;
-  outfile.open("benchmark.txt");
-  
-  outfile << "Hello World!\n";
-  PrintBenchmarks(outfile);
   
   int NTblCnt;
   int ETblCnt;
@@ -292,18 +246,18 @@ int main(int argc, char* []) {
     P->SaveSS("ntable_abc.txt");
     NTables.Add(P);
   }
+  NTables[0]->SaveSS("ntabledef.txt");
   for (int i = 0; i < ETblCnt; i++) {
     ETables.Add(AddEdgeTable(Context));
+    //ETables.Add(AddReverseEdgeTable(Context));
     printf("Enter the source and destination node table number (index starting from 0)\n");
-    int SrcId;
-    int DestId;
-    scanf("%d %d", &SrcId, &DestId);
-    printf("%d %d\n", SrcId, DestId);
-    Mapping.Add(TPair<TInt, TInt>(SrcId, DestId));
+    int SrcId, DstId;
+    scanf("%d %d", &SrcId, &DstId);
+    Mapping.Add(TIntPr(SrcId, DstId));
+    Mapping.Add(TIntPr(DstId, SrcId));
   }
-
-  outfile << "Tables Loaded\n";
-  PrintBenchmarks(outfile);
+  ETblCnt *= 2;
+  
   /* TEST
    
    
@@ -313,36 +267,27 @@ int main(int argc, char* []) {
    printf("check: %s\n", NTables[0]->GetStrVal("NodeID", 2).CStr());
    */
   
-  ///////////////
+  //*/////////////
   
   PTableV Result;
   
   //Caculate outdegrees of each node
   CalcOutDeg(NTables, ETables, Mapping);
   
-  outfile << "Degree calculated\n";
-  PrintBenchmarks(outfile);
-  
   printf("starting pagerank\n");
   //Call Pagerank
   GetPagerankMM(NTables, ETables, Mapping, Result);
-  
-  outfile << "Pagerank completed\n";
-  PrintBenchmarks(outfile);
   
   //Print the pagerank values
   for (int i = 0; i < Result.Len(); i++) {
     printf("Node table #%d:\n", i);
     for (int j = 0; j < Result[i]->GetNumRows(); j++) {
-      printf("NodeID = %s, Degree = %d, Pagerank score = %f\n", (Result[i]->GetStrVal("NodeID", j)).CStr(), Result[i]->GetIntVal("OutDeg", j).Val, (Result[i]->GetFltVal("Pagerank", j)).Val);
+      printf("NodeID = %s, Pagerank score = %f\n", (Result[i]->GetStrVal("NodeID", j)).CStr(), (Result[i]->GetFltVal("Pagerank", j)).Val);
     }
     printf("\n");
     TInt idx = i;
     TStr outfile = "Pagerank" + idx.GetStr() + ".tsv";
     Result[i]->SaveSS(outfile);
   }
-  
-  outfile << "Tables Saved\n";
-  PrintBenchmarks(outfile);
 }
 
