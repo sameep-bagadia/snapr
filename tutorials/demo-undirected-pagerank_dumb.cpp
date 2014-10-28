@@ -270,7 +270,7 @@ int main(int argc, char* []) {
   //outfile.open("benchmark.txt");
   
   FILE * outfile;
-  pFile = fopen ("benchmark.txt","w");
+  outfile = fopen ("benchmark.txt","w");
   
   //outfile << "Hello World!\n";
   fprintf("Hello World!\n");
@@ -343,7 +343,8 @@ int main(int argc, char* []) {
     Result[i]->SaveSS(outfile);
   }
   
-  fprintf(outfile,"Tables Saved\n")s;
+  fprintf(outfile,"Tables Saved\n");
   PrintBenchmarks(outfile);
+  fclose(outfile);
 }
 
