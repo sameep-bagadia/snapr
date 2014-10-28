@@ -3,7 +3,7 @@
 #include <sys/resource.h>
 #include <iostream>
 #include <stdio.h>
-#include <proc/readproc.h>
+//#include <proc/readproc.h>
 
 typedef TVec<PTable> PTableV;
 typedef TVec<TIntPr > TIntPrV;
@@ -273,7 +273,7 @@ int main(int argc, char* []) {
   outfile = fopen ("benchmark.txt","w");
   
   //outfile << "Hello World!\n";
-  fprintf("Hello World!\n");
+  fprintf(outfile, "Hello World!\n");
   PrintBenchmarks(outfile);
   
   int NTblCnt;

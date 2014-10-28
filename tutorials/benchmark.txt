@@ -1,1 +1,5 @@
 Hello World!
+Tables Loaded
+Degree calculated
+Pagerank completed
+Tables Saved
