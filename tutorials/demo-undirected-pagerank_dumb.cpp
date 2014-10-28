@@ -4,9 +4,6 @@
 #include <iostream>
 #include <stdio.h>
 #include <proc/readproc.h>
-#include <fstream>
-
-using namespace std;
 
 typedef TVec<PTable> PTableV;
 typedef TVec<TIntPr > TIntPrV;
@@ -257,22 +254,26 @@ void CalcOutDeg(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping
   printf("Outdegrees stored\n");
 }
 
-void PrintBenchmarks(ofstream& outfile) {
+void PrintBenchmarks(FILE* outfile) {
   float scpu, smem, maxscpu, maxsmem, cputime;
   cputime = getcputime();
   getcpumem(&scpu, &smem);
   getmaxcpumem(&maxscpu, &maxsmem);
-  outfile << cputime << " " << scpu << " " << smem << " " << maxscpu << " " << maxsmem << "\n";
+  fprintf(outfile, "%f %f %f %f %f\n", cputime, scpu, smem, maxscpu, maxsmem);
 }
 
 
 
 int main(int argc, char* []) {
   
-  ofstream outfile;
-  outfile.open("benchmark.txt");
+  //ofstream outfile;
+  //outfile.open("benchmark.txt");
   
-  outfile << "Hello World!\n";
+  FILE * outfile;
+  pFile = fopen ("benchmark.txt","w");
+  
+  //outfile << "Hello World!\n";
+  fprintf("Hello World!\n");
   PrintBenchmarks(outfile);
   
   int NTblCnt;
@@ -302,7 +303,7 @@ int main(int argc, char* []) {
     Mapping.Add(TPair<TInt, TInt>(SrcId, DestId));
   }
 
-  outfile << "Tables Loaded\n";
+  fprintf(outfile, "Tables Loaded\n");
   PrintBenchmarks(outfile);
   /* TEST
    
@@ -320,14 +321,14 @@ int main(int argc, char* []) {
   //Caculate outdegrees of each node
   CalcOutDeg(NTables, ETables, Mapping);
   
-  outfile << "Degree calculated\n";
+  fprintf(outfile,"Degree calculated\n");
   PrintBenchmarks(outfile);
   
   printf("starting pagerank\n");
   //Call Pagerank
   GetPagerankMM(NTables, ETables, Mapping, Result);
   
-  outfile << "Pagerank completed\n";
+  fprintf(outfile,"Pagerank completed\n");
   PrintBenchmarks(outfile);
   
   //Print the pagerank values
@@ -342,7 +343,7 @@ int main(int argc, char* []) {
     Result[i]->SaveSS(outfile);
   }
   
-  outfile << "Tables Saved\n";
+  fprintf(outfile,"Tables Saved\n")s;
   PrintBenchmarks(outfile);
 }
 
