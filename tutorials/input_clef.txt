@@ -1,0 +1,21 @@
+5 7
+../../FlickrTables/photosCLEF/comments.tsv 4
+../../FlickrTables/photosCLEF/locations.tsv 21
+../../FlickrTables/photosCLEF/photos.tsv 6
+../../FlickrTables/photosCLEF/tags.tsv 4
+../../FlickrTables/photosCLEF/users.tsv 4
+../../FlickrTables/photosCLEF/comment_user_edges.tsv 2
+0 4
+../../FlickrTables/photosCLEF/photo_comment_edges.tsv 2
+2 0
+../../FlickrTables/photosCLEF/photo_location_edges.tsv 2
+2 1
+../../FlickrTables/photosCLEF/photo_owner_edges.tsv 2
+2 4
+../../FlickrTables/photosCLEF/photo_tag_edges.tsv 3
+2 3
+../../FlickrTables/photosCLEF/photo_tagger_edges_dupremoved.tsv 2
+2 4
+../../FlickrTables/photosCLEF/tagger_tag_edges_dupremoved.tsv 2
+4 3
+8

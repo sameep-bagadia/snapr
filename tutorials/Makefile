@@ -17,7 +17,7 @@ DEMOS = \
 	demo-topology-benchmark \
 	demo-hashvec-benchmark \
 	demo-pagerank demo-undirected-pagerank \
-	demo-test_table demo-undirected-pagerank_ttableid\
+	demo-test_table demo-undirected-pagerank_edgeiter\
 	\
 
 all: $(DEMOS)

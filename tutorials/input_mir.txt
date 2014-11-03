@@ -1,0 +1,21 @@
+5 7
+../../FlickrTables/photosMIR/comments.tsv 4
+../../FlickrTables/photosMIR/locations.tsv 21
+../../FlickrTables/photosMIR/photos.tsv 6
+../../FlickrTables/photosMIR/tags.tsv 4
+../../FlickrTables/photosMIR/users.tsv 4
+../../FlickrTables/photosMIR/comment_user_edges.tsv 2
+0 4
+../../FlickrTables/photosMIR/photo_comment_edges.tsv 2
+2 0
+../../FlickrTables/photosMIR/photo_location_edges.tsv 2
+2 1
+../../FlickrTables/photosMIR/photo_owner_edges.tsv 2
+2 4
+../../FlickrTables/photosMIR/photo_tag_edges.tsv 3
+2 3
+../../FlickrTables/photosMIR/photo_tagger_edges_dupremoved.tsv 2
+2 4
+../../FlickrTables/photosMIR/tagger_tag_edges_dupremoved.tsv 2
+4 3
+5

@@ -18,3 +18,4 @@
 2 4
 ../../FlickrTables/photosPASCAL/tagger_tag_edges_dupremoved.tsv 2
 4 3
+10
