@@ -1,0 +1,21 @@
+5 7
+../../FlickrTables/photosNUS/comments.tsv 4
+../../FlickrTables/photosNUS/locations.tsv 21
+../../FlickrTables/photosNUS/photos.tsv 6
+../../FlickrTables/photosNUS/tags.tsv 4
+../../FlickrTables/photosNUS/users.tsv 4
+../../FlickrTables/photosNUS/comment_user_edges.tsv 2
+0 4
+../../FlickrTables/photosNUS/photo_comment_edges.tsv 2
+2 0
+../../FlickrTables/photosNUS/photo_location_edges.tsv 2
+2 1
+../../FlickrTables/photosNUS/photo_owner_edges.tsv 2
+2 4
+../../FlickrTables/photosNUS/photo_tag_edges.tsv 3
+2 3
+../../FlickrTables/photosNUS/photo_tagger_edges_dupremoved.tsv 2
+2 4
+../../FlickrTables/photosNUS/tagger_tag_edges_dupremoved.tsv 2
+4 3
+1
