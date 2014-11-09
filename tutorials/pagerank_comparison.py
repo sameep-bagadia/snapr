@@ -1,6 +1,6 @@
 import snap
 
-G = snap.LoadEdgeList(snap.PUNGraph, "input_udpg.txt")
+G = snap.LoadEdgeList(snap.PNGraph, "input_udpg.txt")
 PRankH = snap.TIntFltH()
 snap.GetPageRank(G, PRankH)
 print G.GetNodes()
