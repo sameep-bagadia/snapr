@@ -2,7 +2,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <stdio.h>
-#include <proc/readproc.h>
+//#include <proc/readproc.h>
 
 typedef TVec<PTable> PTableV;
 typedef TVec<TIntPr > TIntPrV;
@@ -21,7 +21,7 @@ float getcputime() {
   ((float) (rusage.ru_utime.tv_sec + rusage.ru_stime.tv_sec));
   return result;
 }
-
+/*
 void getcpumem(float *scpu, float *smem) {
   struct rusage rusage;
   struct proc_t usage;
@@ -44,7 +44,7 @@ void getmaxcpumem(float *scpu, float *smem) {
   ((float) (rusage.ru_utime.tv_sec + rusage.ru_stime.tv_sec));
   *smem = (float) (rusage.ru_maxrss) / 1000;
 }
-
+*/
 /***************************************************************************/
 
 
@@ -188,8 +188,8 @@ void GetPagerankMM(const PTableV& NTables,const PTableV& ETables,const TIntPrV& 
   }
   
   //Print the final pagerank values
-  printf("Final Page rank values:\n");
-  PrintPRank(PRank);
+  //printf("Final Page rank values:\n");
+  //PrintPRank(PRank);
   
   //Store the pagerank values in Result
   Result.Clr();
@@ -291,9 +291,10 @@ void CalcOutWt(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping,
 void PrintBenchmarks(FILE* outfile) {
   float scpu, smem, maxscpu, maxsmem, cputime;
   cputime = getcputime();
-  getcpumem(&scpu, &smem);
+  /*getcpumem(&scpu, &smem);
   getmaxcpumem(&maxscpu, &maxsmem);
-  fprintf(outfile, "%f %f %f %f %f\n", cputime, scpu, smem, maxscpu, maxsmem);
+  fprintf(outfile, "%f %f %f %f %f\n", cputime, scpu, smem, maxscpu, maxsmem);*/
+  fprintf(outfile, "%f\n", cputime);
 }
 
 
