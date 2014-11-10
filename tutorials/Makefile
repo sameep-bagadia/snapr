@@ -17,6 +17,8 @@ DEMOS = \
 	demo-topology-benchmark \
 	demo-hashvec-benchmark \
 	demo-directed-pagerank-dumb  \
+	demo-directed-pagerank-ttableid  \
+	demo-directed-pagerank-edgeiter  \
 	demo-test_table \
 	\
 

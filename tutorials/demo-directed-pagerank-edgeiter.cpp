@@ -94,7 +94,7 @@ PTable AddEdgeTable(TTableContext& Context) {
 
 //one iteration of pagerank algorithm
 void IteratePRank(const PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping, const TFltV Weights,
-                  TVec<TFltV>& PRank, const TVec<TStrIntH >& NodeHash, int NodeCnt) {
+                  TVec<TFltV>& PRank, int NodeCnt) {
   //Make a copy of page rank values
   float d = 0.85;
   TVec<TFltV> OldPR;
@@ -102,6 +102,7 @@ void IteratePRank(const PTableV& NTables, const PTableV& ETables, const TIntPrV&
     TFltV FltVec;
     for (int j = 0; j < PRank[i].Len(); j++) {
       FltVec.Add(PRank[i][j]);
+      PRank[i][j] = (1 - d) / float(NodeCnt);
     }
     OldPR.Add(FltVec);
   }
@@ -110,29 +111,15 @@ void IteratePRank(const PTableV& NTables, const PTableV& ETables, const TIntPrV&
   int NTblCnt = NTables.Len();
   int ETblCnt = ETables.Len();
   
-  // for each node in the graph
-  for (int NType = 0; NType < NTblCnt; NType++) {
-    printf("Starting node type %d\n", NType);
-    int RowCnt = (NTables[NType]->GetNumRows()).Val;
-    for (int NodeID = 0; NodeID < (NTables[NType]->GetNumRows()).Val; NodeID++) {
-      printf("NType:%d, \tnode %d / %d\n", NType, NodeID, RowCnt);
-      TStr CurrNode = NTables[NType]->GetStrVal("NodeID", NodeID);
-      PRank[NType][NodeID] = (1 - d) / float(NodeCnt);
-      
-      //check all the incoming edges to the node
-      for (int EType = 0; EType < ETblCnt; EType++) {
-        //node type should match the destination node for edge type
-        if (Mapping[EType].Val2 == NType) {
-          for (int EId = 0; EId < (ETables[EType]->GetNumRows()).Val; EId++) {
-            if (CurrNode == ETables[EType]->GetStrVal("DstID", EId)) {
-              //add to the pagerank score
-              TStr InNode = ETables[EType]->GetStrVal("SrcID", EId);
-              int InNodeId = (NodeHash[Mapping[EType].Val1].GetDat(InNode)).Val;
-              PRank[NType][NodeID] += (d * Weights[EType] * OldPR[Mapping[EType].Val1][InNodeId]) / (NTables[Mapping[EType].Val1]->GetFltVal("OutWt", InNodeId)).Val;
-            }
-          }
-        }
-      }
+  // for each edge, update the pagerank value of destination node connected to the edge
+  for (int EType = 0; EType < ETblCnt; EType++) {
+    int N1Type = Mapping[EType].Val1;
+    int N2Type = Mapping[EType].Val2;
+    for (int EId = 0; EId < ETables[EType]->GetNumRows().Val; EId++) {
+      int Node1ID = (ETables[EType]->GetIntVal("SrcTTID", EId)).Val;
+      int Node2ID = (ETables[EType]->GetIntVal("DstTTID", EId)).Val;
+      //PRank[N1Type][Node1ID] += (d * OldPR[N2Type][Node2ID]) / (NTables[N2Type]->GetIntVal("OutDeg", Node2ID)).Val;
+      PRank[N2Type][Node2ID] += (d * Weights[EType] * OldPR[N1Type][Node1ID]) / (NTables[N1Type]->GetFltVal("OutWt", Node1ID)).Val;
     }
   }
 }
@@ -168,22 +155,12 @@ void GetPagerankMM(const PTableV& NTables,const PTableV& ETables,const TIntPrV& 
     PRank.Add(FltVec);
   }
   
-  //Create the hashtable from NodeID to index
-  TVec<TStrIntH > NodeHash;
-  for (int i = 0; i < NTblCnt; i++) {
-    TStrIntH hash;
-    for (int j = 0; j < NTables[i]->GetNumRows().Val; j++) {
-      hash.AddDat(NTables[i]->GetStrVal("NodeID", j), j);
-    }
-    NodeHash.Add(hash);
-  }
-  
   //Run pagerank for some iterations
   int IterCnt = 10;
   //PrintPRank(PRank);
   for (int i = 0; i < IterCnt; i++) {
     printf("Starting pagerank iteration number: %d\n", i);
-    IteratePRank(NTables, ETables, Mapping, Weights, PRank, NodeHash, NodeCnt);
+    IteratePRank(NTables, ETables, Mapping, Weights, PRank, NodeCnt);
     //PrintPRank(PRank);
   }
   
@@ -197,6 +174,35 @@ void GetPagerankMM(const PTableV& NTables,const PTableV& ETables,const TIntPrV& 
     PTable NewPTable = new TTable(*NTables[i]);
     NewPTable->StoreFltCol("Pagerank", PRank[i]);
     Result.Add(NewPTable);
+  }
+}
+
+void StoreTTableIds(const PTableV& NTables, PTableV& ETables, const TIntPrV& Mapping) {
+  int NTblCnt = NTables.Len();
+  int ETblCnt = ETables.Len();
+  
+  //Create the hashtable from NodeID to index
+  TVec<TStrIntH > NodeHash;
+  for (int i = 0; i < NTblCnt; i++) {
+    TStrIntH hash;
+    for (int j = 0; j < NTables[i]->GetNumRows().Val; j++) {
+      hash.AddDat(NTables[i]->GetStrVal("NodeID", j), j);
+    }
+    NodeHash.Add(hash);
+  }
+  
+  //Store the TTable Ids in the edge tables
+  for (int EType = 0; EType < ETblCnt; EType++) {
+    TIntV SrcTTId;
+    TIntV DstTTId;
+    int SrcType = Mapping[EType].Val1;
+    int DstType = Mapping[EType].Val2;
+    for (int EId = 0; EId < (ETables[EType]->GetNumRows()).Val; EId++) {
+      SrcTTId.Add(NodeHash[SrcType].GetDat(ETables[EType]->GetStrVal("SrcID" ,EId)));
+      DstTTId.Add(NodeHash[DstType].GetDat(ETables[EType]->GetStrVal("DstID" ,EId)));
+    }
+    ETables[EType]->StoreIntCol("SrcTTID", SrcTTId);
+    ETables[EType]->StoreIntCol("DstTTID", DstTTId);
   }
 }
 
@@ -230,6 +236,12 @@ void CalcOutDeg(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping
       int tempval1 = OutDeg[SrcTbl].GetDat(Key1);
       OutDeg[SrcTbl].AddDat(Key1, tempval1+1);
       //printf("nodes%d, id = %s, new_val = %d\n", SrcTbl, (ETables[i]->GetStrVal("SrcID", j)).CStr(), (OutDeg[SrcTbl].GetDat(Key1)).Val);
+      
+      TStr Key2 = ETables[i]->GetStrVal("DstID", j);
+      int tempval2 = OutDeg[DstTbl].GetDat(Key2);
+      OutDeg[DstTbl].AddDat(Key2, tempval2+1);
+      
+      //printf("nodes%d, id = %s, new_val = %d\n", DstTbl, (ETables[i]->GetStrVal("DstID", j)).CStr(), (OutDeg[DstTbl].GetDat(Key2)).Val);
     }
   }
   printf("Outdegrees calculated\n");
@@ -243,7 +255,6 @@ void CalcOutDeg(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping
   }
   printf("Outdegrees stored\n");
 }
-
 
 // Calculate the outweights of each node and stores as a new attribute in the node tables.
 void CalcOutWt(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping, const TFltV& Weights) {
@@ -288,6 +299,7 @@ void CalcOutWt(PTableV& NTables, const PTableV& ETables, const TIntPrV& Mapping,
   printf("Outweights stored\n");
 }
 
+
 void PrintBenchmarks(FILE* outfile) {
   float cputime;
   cputime = getcputime();
@@ -296,12 +308,19 @@ void PrintBenchmarks(FILE* outfile) {
   fprintf(outfile, "%f\n", cputime);
 }
 
-
+void PrintStats(const PTableV& NTables, const PTableV& ETables, FILE* outfile) {
+  int NodeCnt = 0;
+  int EdgeCnt = 0;
+  for (int i = 0; i < NTables.Len(); i++) {
+    NodeCnt += NTables[i]->GetNumRows().Val;
+  }
+  for (int i = 0; i < ETables.Len(); i++) {
+    EdgeCnt += ETables[i]->GetNumRows().Val;
+  }
+  fprintf(outfile, "Nodes: %d, Edges: %d\n", NodeCnt, EdgeCnt);
+}
 
 int main(int argc, char* []) {
-  
-  //ofstream outfile;
-  //outfile.open("benchmark.txt");
   
   FILE * outfile;
   outfile = fopen ("benchmark.txt","w");
@@ -339,21 +358,10 @@ int main(int argc, char* []) {
     Mapping.Add(TPair<TInt, TInt>(SrcId, DestId));
     Weights.Add(Wt);
   }
-
+  
   fprintf(outfile, "Tables Loaded\n");
   PrintBenchmarks(outfile);
-  /* TEST
-   
-   
-   
-   NTables[0]->SaveSS("ntable0.txt");
-   
-   printf("check: %s\n", NTables[0]->GetStrVal("NodeID", 2).CStr());
-   */
-  
-  ///////////////
-  
-  PTableV Result;
+
   
   //Caculate outweight of each node
   //CalcOutDeg(NTables, ETables, Mapping);
@@ -362,9 +370,23 @@ int main(int argc, char* []) {
   fprintf(outfile,"Out weights calculated\n");
   PrintBenchmarks(outfile);
   
-  printf("starting pagerank\n");
-  //Call Pagerank
-  GetPagerankMM(NTables, ETables, Mapping, Weights, Result);
+  // Store TTable ids in the edge files
+  StoreTTableIds(NTables, ETables, Mapping);
+  fprintf(outfile,"TTable ids stored\n");
+  PrintBenchmarks(outfile);
+  
+  int PRCnt;
+  printf("Enter the number of times to run pagerank for 10 iterations\n");
+  scanf("%d", &PRCnt);
+  
+  PTableV Result;
+  for (int i = 0; i < PRCnt; i++) {
+    printf("starting pagerank no %d\n", i);
+    //Call Pagerank
+    Result.Clr();
+    GetPagerankMM(NTables, ETables, Mapping, Weights, Result);
+  }
+  
   
   fprintf(outfile,"Pagerank completed\n");
   PrintBenchmarks(outfile);
