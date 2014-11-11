@@ -413,7 +413,7 @@ int main(int argc, char* []) {
     printf("starting pagerank no %d\n", i);
     //Call Pagerank
     Result.Clr();
-    GetPagerankMM(NTables, ETables, Mapping, Weights, Result);
+    GetPagerankMM(NTables, ETables, Mapping, Weights, GroupMap, Result);
   }
   
   fprintf(outfile,"Pagerank completed\n");
