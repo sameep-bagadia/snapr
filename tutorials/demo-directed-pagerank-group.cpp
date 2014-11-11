@@ -381,9 +381,7 @@ int main(int argc, char* []) {
   
   fprintf(outfile, "Tables Loaded\n");
   PrintBenchmarks(outfile);
-  
-  PTableV Result;
-  
+    
   //Caculate outweight of each node
   //CalcOutDeg(NTables, ETables, Mapping);
   CalcOutWt(NTables, ETables, Mapping, Weights);
@@ -406,9 +404,17 @@ int main(int argc, char* []) {
   
   printf("Group mappings calculated\n");
   
-  printf("starting pagerank\n");
-  //Call Pagerank
-  GetPagerankMM(NTables, ETables, Mapping, Weights, GroupMap, Result);
+  int PRCnt;
+  printf("Enter the number of times to run pagerank for 10 iterations\n");
+  scanf("%d", &PRCnt);
+  
+  PTableV Result;
+  for (int i = 0; i < PRCnt; i++) {
+    printf("starting pagerank no %d\n", i);
+    //Call Pagerank
+    Result.Clr();
+    GetPagerankMM(NTables, ETables, Mapping, Weights, Result);
+  }
   
   fprintf(outfile,"Pagerank completed\n");
   PrintBenchmarks(outfile);
