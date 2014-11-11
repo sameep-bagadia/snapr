@@ -1240,6 +1240,16 @@ void TTable::Group(const TStrV& GroupBy, const TStr& GroupColName, TBool Ordered
   GroupAux(NGroupBy, Grouping, Ordered, NGroupColName, false, UniqueVec);
 }
 
+// get the group mapping along with grouping
+void TTable::GetGroupMapping(const TStrV& GroupBy, const TStr& GroupColName, THash<TGroupKey, TPair<TInt, TIntV> >& Grouping, TBool Ordered) {
+  TStrV NGroupBy = NormalizeColNameV(GroupBy);
+  TStr NGroupColName = NormalizeColName(GroupColName);
+  TIntV UniqueVec;
+  //THash<TGroupKey, TPair<TInt, TIntV> > Grouping;
+  // by default, we assume we don't want unique rows
+  GroupAux(NGroupBy, Grouping, Ordered, NGroupColName, false, UniqueVec);
+}
+
 void TTable::Aggregate(const TStrV& GroupByAttrs, TAttrAggr AggOp,
  const TStr& ValAttr, const TStr& ResAttr, TBool Ordered) {
   // double startFn = omp_get_wtime();

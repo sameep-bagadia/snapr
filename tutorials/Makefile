@@ -19,6 +19,7 @@ DEMOS = \
 	demo-directed-pagerank-dumb  \
 	demo-directed-pagerank-ttableid  \
 	demo-directed-pagerank-edgeiter  \
+	demo-directed-pagerank-group  \
 	demo-test_table \
 	\
 

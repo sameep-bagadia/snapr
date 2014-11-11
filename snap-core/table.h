@@ -846,6 +846,9 @@ public:
   /// Groups rows depending on values of \c GroupBy columns. ##TTable::Group
   void Group(const TStrV& GroupBy, const TStr& GroupColName, TBool Ordered = true);
   
+  /// Groups rows depending on values of \c GroupBy columns. Get the mapping stored in Grouping
+  void GetGroupMapping(const TStrV& GroupBy, const TStr& GroupColName, THash<TGroupKey, TPair<TInt, TIntV> >& Grouping, TBool Ordered = true);
+  
   /// Counts number of unique elements. ##TTable::Count
   void Count(const TStr& CountColName, const TStr& Col);
 
