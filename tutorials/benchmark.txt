@@ -1,14 +1,14 @@
 Hello World!
-0.003862
+0.002770
 Tables Loaded
-1.118601
+1.058653
 Out weights calculated
-1.458423
+1.406524
 TTable ids stored
-1.890591
+1.832764
 Group mappings calculated
-2.162713
+2.094715
 Pagerank completed
-4.815493
+40.469559
 Tables Saved
-5.070410
+40.706497
