@@ -112,7 +112,7 @@ void IteratePRankMP(const PTableV& NTables, const PTableV& ETables, const TIntPr
   int ETblCnt = ETables.Len();
   
   // for each node in the graph
-  int NType, NodeID
+  int NType, NodeID;
   #pragma omp parallel for collapse(2) schedule(dynamic, 10000)
   for (NType = 0; NType < NTblCnt; NType++) {
     //printf("Starting node type %d\n", NType);
