@@ -113,10 +113,8 @@ void IteratePRankMP(const PTableV& NTables, const PTableV& ETables, const TIntPr
   
   // for each node in the graph
   int NType, NodeID;
-  #pragma omp parallel for collapse(2) schedule(dynamic, 10000)
+  #pragma omp parallel for collapse(2) schedule(dynamic, 10000) numthreads(1)
   for (NType = 0; NType < NTblCnt; NType++) {
-    //printf("Starting node type %d\n", NType);
-    //int RowCnt = (NTables[NType]->GetNumRows()).Val;
     for (NodeID = 0; NodeID < (NTables[NType]->GetNumRows()).Val; NodeID++) {
       //printf("NType:%d, \tnode %d / %d\n", NType, NodeID, RowCnt);
       PRank[NType][NodeID] = (1 - d) / float(NodeCnt);
