@@ -113,10 +113,12 @@ void IteratePRankMP(const PTableV& NTables, const PTableV& ETables, const TIntPr
   
   // for each node in the graph
   int NType, NodeID;
-  #pragma omp parallel for collapse(2) schedule(dynamic, 10000) numthreads(1)
+  //#pragma omp parallel for collapse(2) schedule(dynamic, 10000)
   for (NType = 0; NType < NTblCnt; NType++) {
+    #pragma omp parallel for schedule(dynamic, 10000)
     for (NodeID = 0; NodeID < (NTables[NType]->GetNumRows()).Val; NodeID++) {
-      //printf("NType:%d, \tnode %d / %d\n", NType, NodeID, RowCnt);
+
+      //printf("NType:%d, \tnodeid %d / %d\n", NType, NodeID, 1);
       PRank[NType][NodeID] = (1 - d) / float(NodeCnt);
       TGroupKey NodeKey;
       NodeKey.Val1.Add(NodeID);
@@ -335,7 +337,7 @@ void PrintBenchmarks(FILE* outfile) {
   cputime = getcputime();
   /*getcpumem(&scpu, &smem);
   getmaxcpumem(&maxscpu, &maxsmem);*/
-  fprintf(outfile, "%f\n", cputime);
+  fprintf(outfile, "%f \t%f\n", cputime, omp_get_wtime());
 }
 
 
