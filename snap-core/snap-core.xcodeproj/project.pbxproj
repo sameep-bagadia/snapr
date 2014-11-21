@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7E8D1D9E1A1D6F4A00A32CD4 /* mmnet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E44AAB71A1BEE4500B963F2 /* mmnet.cpp */; };
 		848A6F9C16D0631500E6F7D3 /* testSnap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 846313AF16CF5BCA003F2BAE /* testSnap.cpp */; };
 		848A6F9E16D0633300E6F7D3 /* Snap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 846313A716CF5BCA003F2BAE /* Snap.cpp */; };
 		848A6FC116D0691C00E6F7D3 /* alg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8463136B16CF5BCA003F2BAE /* alg.cpp */; };
@@ -303,6 +304,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7E44AAB71A1BEE4500B963F2 /* mmnet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mmnet.cpp; sourceTree = "<group>"; };
+		7E44AAB81A1BEE4500B963F2 /* mmnet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mmnet.h; sourceTree = "<group>"; };
 		8463136B16CF5BCA003F2BAE /* alg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = alg.cpp; sourceTree = "<group>"; };
 		8463136C16CF5BCA003F2BAE /* alg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alg.h; sourceTree = "<group>"; };
 		8463136D16CF5BCA003F2BAE /* anf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = anf.cpp; sourceTree = "<group>"; };
@@ -840,6 +843,8 @@
 				846313B216CF5BCA003F2BAE /* triad.h */,
 				846313B316CF5BCA003F2BAE /* util.cpp */,
 				846313B416CF5BCA003F2BAE /* util.h */,
+				7E44AAB71A1BEE4500B963F2 /* mmnet.cpp */,
+				7E44AAB81A1BEE4500B963F2 /* mmnet.h */,
 			);
 			name = "snap-core";
 			sourceTree = "<group>";
@@ -1614,6 +1619,7 @@
 				848A71A216D06CAA00E6F7D3 /* casino.cpp in Sources */,
 				848A71A316D06CAA00E6F7D3 /* ccar.cpp in Sources */,
 				848A71A416D06CAA00E6F7D3 /* cfyres.cpp in Sources */,
+				7E8D1D9E1A1D6F4A00A32CD4 /* mmnet.cpp in Sources */,
 				848A71A516D06CAA00E6F7D3 /* cgi.cpp in Sources */,
 				848A71A616D06CAA00E6F7D3 /* ciawfb.cpp in Sources */,
 				848A71A716D06CAA00E6F7D3 /* cordis.cpp in Sources */,
