@@ -20,8 +20,8 @@ DEMOS = \
 	demo-directed-pagerank-ttableid  \
 	demo-directed-pagerank-edgeiter  \
 	demo-directed-pagerank-group  \
-	demo-directed-pagerank-group-mp  \
 	demo-test_table \
+	demo-tsvnet \
 	\
 
 all: $(DEMOS)

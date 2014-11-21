@@ -1,0 +1,23 @@
+5 8
+../../FlickrTables/photosPASCAL/comments.tsv 4
+../../FlickrTables/photosPASCAL/locations.tsv 21
+../../FlickrTables/photosPASCAL/photos.tsv 6
+../../FlickrTables/photosPASCAL/tags.tsv 4
+../../FlickrTables/photosPASCAL/users.tsv 4
+../../FlickrTables/photosPASCAL/comment_user_edges.tsv 2 1
+4 0
+../../FlickrTables/photosPASCAL/photo_comment_edges.tsv 2 1
+0 2
+../../FlickrTables/photosPASCAL/photo_location_edges.tsv 2 0
+2 1
+../../FlickrTables/photosPASCAL/photo_location_edges.tsv 2 1
+1 2
+../../FlickrTables/photosPASCAL/photo_owner_edges.tsv 2 0
+2 4
+../../FlickrTables/photosPASCAL/photo_owner_edges.tsv 2 1
+4 2
+../../FlickrTables/photosPASCAL/photo_tag_edges.tsv 3 1
+3 2
+../../FlickrTables/photosPASCAL/tagger_tag_edges.tsv 3 0
+4 3
+150

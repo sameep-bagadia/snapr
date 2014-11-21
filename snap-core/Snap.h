@@ -17,7 +17,7 @@
 #include "network.h"         // networks
 #include "bignet.h"          // large networks
 #include "timenet.h"         // time evolving networks
-//#include "mmnet.h"
+#include "mmnet.h"
 
 // algorithms
 #include "subgraph.h"        // subgraph manipulations

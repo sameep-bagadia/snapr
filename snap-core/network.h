@@ -2072,3 +2072,4 @@ namespace TSnap {
 template <> struct IsMultiGraph<TNEANet> { enum { Val = 1 }; };
 template <> struct IsDirected<TNEANet> { enum { Val = 1 }; };
 }
+
