@@ -73,7 +73,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
   int NTypeCnt = Graph->GetNTypeCnt();
   int ETypeCnt = Graph->GetETypeCnt();
   //TIntV NV;
-  TVec<typename TSVNet::TNodeI> NV;
+  TVec<TSVNet::TNodeI> NV;
   //const double OneOver = 1.0/double(NNodes);
   for (int i = 0; i < NTypeCnt; i++) {
     TIntFltH PRankH;
@@ -81,11 +81,11 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
     PRankHV.Add(PRankH);
   }
   //PRankH.Gen(NNodes);
-  int MxId = -1;
+  //int MxId = -1;
   //time_t t = time(0);
   //printf("%s", ctime(&t));
   for (int NType = 0; NType < NTypeCnt; NType++) {
-    for (typename TSVNet::TNodeI NI = Graph->BegNI(NType); NI < Graph->EndNI(NType); NI++) {
+    for (TSVNet::TNodeI NI = Graph->BegNI(NType); NI < Graph->EndNI(NType); NI++) {
       NV.Add(NI);
       PRankHV[NType].AddDat(NI.GetId(), 1.0/NNodes);
     }
@@ -105,8 +105,10 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
   TVec<TFltV> PRankVV;
   TVec<TIntV> OutDegVV;
   for (int NType = 0; NType < NTypeCnt; NType++) {
-    PRankVV.Add(TFltV(Graph->GetMxNId(NType)));
-    OutDegVV.Add(TFltV(Graph->GetMxNId(NType)));
+    TFltV PRankV(Graph->GetMxNId(NType)+1);
+    TIntV OutDegV(Graph->GetMxNId(NType)+1);
+    PRankVV.Add(PRankV);
+    OutDegVV.Add(OutDegV);
   }
   /*
   TFltV PRankV(MxId+1);
@@ -115,7 +117,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
   //for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++) {
 #pragma omp parallel for schedule(dynamic,10000)
   for (int j = 0; j < NNodes; j++) {
-    typename TSVNet::TNodeI NI = NV[j];
+    TSVNet::TNodeI NI = NV[j];
     int NId = NI.GetId();
     int NType = NI.GetNType();
     PRankVV[NType][NId] = 1.0/NNodes;
@@ -139,7 +141,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
     //for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++, j++) {
 #pragma omp parallel for schedule(dynamic,10000)
     for (int j = 0; j < NNodes; j++) {
-      typename TSVGraph::TNodeI NI = NV[j];
+      TSVNet::TNodeI NI = NV[j];
       TFlt Tmp = 0;
       for (int EType = 0; EType < ETypeCnt; EType++) {
         for (int e = 0; e < NI.GetInDeg(EType); e++) {
@@ -194,7 +196,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
     //}
 #pragma omp parallel for reduction(+:diff) schedule(dynamic,10000)
     for (int i = 0; i < NNodes; i++) {
-      typename TSVNet::TNodeI NI = NV[i];
+      TSVNet::TNodeI NI = NV[i];
       double NewVal = TmpV[i] + Leaked; // Berkhin
       //NewVal = TmpV[i] / sum;  // iGraph
       int NId = NI.GetId();
@@ -208,7 +210,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
   
 #pragma omp parallel for schedule(dynamic,10000)
   for (int i = 0; i < NNodes; i++) {
-    typename TSVNet::TNodeI NI = NV[i];
+    TSVNet::TNodeI NI = NV[i];
     int NId = NI.GetId();
     int NType = NI.GetNType();
     //PRankH.AddDat(NI.GetId(), PRankV[NI.GetId()]);
