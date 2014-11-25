@@ -21,7 +21,7 @@ DEMOS = \
 	demo-directed-pagerank-edgeiter  \
 	demo-directed-pagerank-group  \
 	demo-test_table \
-	demo-tsvnet \
+	demo-tsvnet-mp \
 	\
 
 all: $(DEMOS)

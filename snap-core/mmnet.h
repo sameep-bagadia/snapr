@@ -235,6 +235,7 @@ public:
   int GetSrcNId(const int& EId, const int& EType) { return EdgeHV[EType].GetDat(EId).GetSrcNId(); }
   int GetDstNId(const int& EId, const int& EType) { return EdgeHV[EType].GetDat(EId).GetDstNId(); }
   TNode& GetNI(const int& NId, const int& NType) { return NodeHV[NType].GetDat(NId); }
+  int GetMxNId(const int& NType) { return MxNIdV[NType] - 1; }
   /*
   void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
   */
@@ -243,6 +244,9 @@ public:
 
 typedef TSVNet* PSVNet;
 void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+#ifdef _OPENMP
+void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+#endif
 
 
 #endif /* defined(snap_mmnet_h) */
