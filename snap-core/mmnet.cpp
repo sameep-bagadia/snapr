@@ -139,7 +139,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
     //printf("%s%d\n", ctime(&t),iter);
     //int j = 0;
     //for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++, j++) {
-#pragma omp parallel for schedule(dynamic,10000)
+#pragma omp parallel for schedule(dynamic,1000)
     for (int j = 0; j < NNodes; j++) {
       TSVNet::TNodeI NI = NV[j];
       TFlt Tmp = 0;
