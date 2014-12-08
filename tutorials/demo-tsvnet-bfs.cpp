@@ -97,7 +97,7 @@ void PrintBenchmarks(FILE* outfile) {
   cputime = getcputime();
   /*getcpumem(&scpu, &smem);
    getmaxcpumem(&maxscpu, &maxsmem);*/
-  fprintf(outfile, "%f \t%f\n", cputime, omp_get_wtime());
+  fprintf(outfile, "%f\n", cputime);
 }
 
 
@@ -224,7 +224,7 @@ int main(int argc, char* []) {
     //Call Bfs
     printf("Reacehd here\n");
     BfsLevelHV.Clr();
-    GetBfsLevelMMMP(&Graph, BfsLevelHV, StartNId, StartNType);
+    GetBfsLevelMM(&Graph, BfsLevelHV, StartNId, StartNType);
   }
   
   fprintf(outfile, "Bfs completed\n");
