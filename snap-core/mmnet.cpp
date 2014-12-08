@@ -339,5 +339,92 @@ void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int&
   }
 }
 
+int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType) {
+  int NTypeCnt = Graph->GetNTypeCnt();
+  int ETypeCnt = Graph->GetETypeCnt();
+  const int NNodes = Graph->GetNodes();
+  //int MxNId = Graph->GetMxNId();
+  int NonNodeDepth = 2147483647; // INT_MAX
+  int InfDepth = 2147483646; // INT_MAX - 1
+  //ShortestDists.Gen(MxNId);
+  BfsLevelVV.Gen(NTypeCnt);
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    BfsLevelVV[NType].Gen(Graph->GetMxNId(NType));
+  }
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    int MxNId = Graph->GetMxNId(NType);
+#pragma omp parallel for schedule(dynamic,10000)
+    for (int NId = 0; NId < MxNId; NId++) {
+      if (Graph->IsNode(NId)) { BfsLevelVV[NType][NId] = InfDepth; }
+      else { BfsLevelVV[NType][NId] = NonNodeDepth; }
+    }
+  }
+  
+  
+  TIntV NIdVec1(NNodes, 0); // ensure enough capacity
+  TIntV NIdVec2(NNodes, 0); // ensure enough capacity
+  TIntV NTypeVec1(NNodes, 0); // ensure enough capacity
+  TIntV NTypeVec2(NNodes, 0); // ensure enough capacity
+  //TIntV Vec2(MxNId, 0); // ensure enough capacity
+  
+  BfsLevelVV[StartNType][StartNId] = 0;
+  TIntV* PCurNIdV = &NIdVec1;
+  TIntV* PCurNTypeV = &NTypeVec1;
+  PCurNIdV->Add(StartNId);
+  PCurNTypeV->Add(StartNType);
+  TIntV* PNextNIdV = &NIdVec2;
+  TIntV* PNextNTypeV = &NTypeVec2;
+  int Depth = 0; // current depth
+  
+  while (!PCurNIdV->Empty()) {
+    Depth++; // increase depth
+#pragma omp parallel for schedule(dynamic,1000)
+    for (int i = 0; i < PCurNIdV->Len(); i++) {
+      int NId = PCurNIdV->GetVal(i);
+      int NType = PCurNTypeV->GetVal(i);
+      TSVNet::TNodeI NI = Graph->GetNI(NId, NType);
+      for (int EType = 0; EType < ETypeCnt; EType++) {
+        for (int e = 0; e < NI.GetOutDeg(EType); e++) {
+          const int EId = NI.GetOutEId(e, EType);
+          const int OutNId = Graph->GetDstNId(EId, EType);
+          const int OutNType = Graph->GetDstNType(EType);
+          //const int OutNId = NI.GetOutNId(e);
+          if (__sync_bool_compare_and_swap(&(BfsLevelVV[OutNType][OutNId].Val), InfDepth, Depth)) {
+            PNextNIdV->AddAtm(OutNId);
+            PNextNTypeV->AddAtm(OutNType);
+          }
+        }
+      }
+      
+    }
+    //      #pragma omp parallel for schedule(dynamic,10000)
+    //      for (int NId = 0; NId < MxNId; NId++) {
+    //        if (ShortestDists[NId] == InfDepth) {
+    //          typename PGraph::TObj::TNodeI NI = Graph->GetNI(NId);
+    //          for (int e = 0; e < NI.GetInDeg(); e++) {
+    //            const int InNId = NI.GetInNId(e);
+    //            if (ShortestDists[InNId] < Depth) {
+    //              ShortestDists[NId] = Depth;
+    //              PNextV->AddAtm(NId);
+    //              break;
+    //            }
+    //          }
+    //        }
+    //      }
+    // swap pointer, no copying
+    TIntV* TmpNId = PCurNIdV;
+    PCurNIdV = PNextNIdV;
+    PNextNIdV = TmpNId;
+    
+    TIntV* TmpNType = PCurNTypeV;
+    PCurNTypeV = PNextNTypeV;
+    PNextNTypeV = TmpNType;
+    // clear next
+    PNextNIdV->Reduce(0); // reduce length, does not initialize new array
+    PNextNTypeV->Reduce(0);
+  }
+  return Depth-1;
+}
+
 
 #endif

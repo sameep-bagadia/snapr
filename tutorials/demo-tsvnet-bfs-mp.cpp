@@ -214,7 +214,7 @@ int main(int argc, char* []) {
   //Call Pagerank
   printf("Starting Bfs\n");
   
-  TVec<TIntIntH> BfsLevelHV;
+  TVec<TIntV> BfsLevelVV;
   //GetBfsLevelMM(&Graph, BfsLevelHV, 0, 0);
   
   for (int i = 0; i < NodesCnt; i++) {
@@ -223,8 +223,8 @@ int main(int argc, char* []) {
     int StartNId = NodesHV[StartNType].GetDat(TStr(NodeIdV[i]));
     //Call Bfs
     printf("Reacehd here\n");
-    BfsLevelHV.Clr();
-    GetBfsLevelMMMP(&Graph, BfsLevelHV, StartNId, StartNType);
+    BfsLevelVV.Clr();
+    GetBfsLevelMMMP2(&Graph, BfsLevelVV, StartNId, StartNType);
   }
   
   fprintf(outfile, "Bfs completed\n");

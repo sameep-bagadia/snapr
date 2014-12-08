@@ -6,21 +6,6 @@ include ../Makefile.config
 
 ## Main application file
 DEMOS = \
-	demo-TUNGraph demo-TNGraph demo-TNEGraph \
-	demo-TNodeNet demo-TNodeEDatNet demo-TNodeEdgeNet \
-        demo-TNEANet \
-	demo-subgraph demo-ggen \
-	demo-gio demo-gviz  \
-	demo-cncom demo-cncom1 demo-bfsdfs \
-	demo-triad \
-	demo-THash \
-	demo-topology-benchmark \
-	demo-hashvec-benchmark \
-	demo-directed-pagerank-dumb  \
-	demo-directed-pagerank-ttableid  \
-	demo-directed-pagerank-edgeiter  \
-	demo-directed-pagerank-group  \
-	demo-test_table \
 	demo-tsvnet-bfs \
 	demo-tsvnet-bfs-mp \
 	\

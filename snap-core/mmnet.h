@@ -250,6 +250,7 @@ public:
 typedef TSVNet* PSVNet;
 void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
 void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
+int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType);
 #ifdef _OPENMP
 void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
 void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
