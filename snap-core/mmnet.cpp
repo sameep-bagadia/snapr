@@ -360,29 +360,37 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
     }
   }
   
-  
+  /*
   TIntV NIdVec1(NNodes, 0); // ensure enough capacity
   TIntV NIdVec2(NNodes, 0); // ensure enough capacity
   TIntV NTypeVec1(NNodes, 0); // ensure enough capacity
   TIntV NTypeVec2(NNodes, 0); // ensure enough capacity
-  //TIntV Vec2(MxNId, 0); // ensure enough capacity
+   */
+  TIntPrV Vec1(MxNId);
+  TIntPrV Vec2(MxNId); // ensure enough capacity
   
   BfsLevelVV[StartNType][StartNId] = 0;
+  /*
   TIntV* PCurNIdV = &NIdVec1;
   TIntV* PCurNTypeV = &NTypeVec1;
   PCurNIdV->Add(StartNId);
   PCurNTypeV->Add(StartNType);
   TIntV* PNextNIdV = &NIdVec2;
   TIntV* PNextNTypeV = &NTypeVec2;
+   */
+  TIntPrV* PCurV = &Vec1;
+  TIntPr StartNode(StartNId, StartNType);
+  PCurV->Add(StartNode);
+  TIntPrV* PNextV = &Vec2;
   int Depth = 0; // current depth
   
-  while (!PCurNIdV->Empty()) {
+  while (!PCurV->Empty()) {
     Depth++; // increase depth
     printf("Starting depth : %d\n", Depth);
 #pragma omp parallel for schedule(dynamic,1000)
-    for (int i = 0; i < PCurNIdV->Len(); i++) {
-      int NId = PCurNIdV->GetVal(i);
-      int NType = PCurNTypeV->GetVal(i);
+    for (int i = 0; i < PCurV->Len(); i++) {
+      int NId = PCurV->GetVal(i).Val1;
+      int NType = PCurV->GetVal(i).Val2;
       TSVNet::TNodeI NI = Graph->GetNI(NId, NType);
       for (int EType = 0; EType < ETypeCnt; EType++) {
         for (int e = 0; e < NI.GetOutDeg(EType); e++) {
@@ -394,8 +402,9 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
           //const int OutNId = NI.GetOutNId(e);
           if (__sync_bool_compare_and_swap(&(BfsLevelVV[OutNType][OutNId].Val), InfDepth, Depth)) {
             //printf("before AddAtm\n");
-            PNextNIdV->AddAtm(OutNId);
-            PNextNTypeV->AddAtm(OutNType);
+            TIntPr out_node(OutNId, OutNType);
+            PNextV->AddAtm(out_node);
+            //PNextNTypeV->AddAtm(OutNType);
             //printf("After AddAtm\n");
           }
         }
@@ -417,16 +426,16 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
     //        }
     //      }
     // swap pointer, no copying
-    TIntV* TmpNId = PCurNIdV;
-    PCurNIdV = PNextNIdV;
-    PNextNIdV = TmpNId;
+    TIntPrV* Tmp = PCurV;
+    PCurV = PNextV;
+    PNextV = Tmp;
     
-    TIntV* TmpNType = PCurNTypeV;
-    PCurNTypeV = PNextNTypeV;
-    PNextNTypeV = TmpNType;
+    //TIntV* TmpNType = PCurNTypeV;
+    //PCurNTypeV = PNextNTypeV;
+    //PNextNTypeV = TmpNType;
     // clear next
-    PNextNIdV->Reduce(0); // reduce length, does not initialize new array
-    PNextNTypeV->Reduce(0);
+    PNextV->Reduce(0); // reduce length, does not initialize new array
+    //PNextNTypeV->Reduce(0);
   }
   return Depth-1;
 }
