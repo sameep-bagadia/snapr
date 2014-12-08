@@ -223,6 +223,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
 #endif
 
 void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int& StartNId, const int& StartNType) {
+  //printf("BFS called\n");
   int NTypeCnt = Graph->GetNTypeCnt();
   int ETypeCnt = Graph->GetETypeCnt();
   
@@ -239,13 +240,16 @@ void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int& S
       BfsLevelHV[NType].AddDat(NI.GetId(), -1);
     }
   }
+  //printf("reached here1\n");
   int LevelCnt = 0;
   TVec<TIntPr> CurrLevel;
   TVec<TIntPr> NextLevel;
   TIntPr StartNode(StartNType, StartNId);
   CurrLevel.Add(StartNode);
   BfsLevelHV[StartNode.Val1].AddDat(StartNode.Val2, 0);
+  //printf("reached here2\n");
   while (CurrLevel.Len() > 0) {
+    //printf("bfs level: %d\n", LevelCnt);
     LevelCnt++;
     //printf("level count: %d\n", LevelCnt);
     NextLevel.Clr();
@@ -277,6 +281,7 @@ void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int& S
 void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int& StartNId, const int& StartNType) {
   int NTypeCnt = Graph->GetNTypeCnt();
   int ETypeCnt = Graph->GetETypeCnt();
+  const int NNodes = Graph->GetNodes();
   
   BfsLevelHV = TVec<TIntIntH>();
   
@@ -293,13 +298,14 @@ void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int&
   }
   int LevelCnt = 0;
   TVec<TIntPr> CurrLevel;
-  TVec<TIntPr> NextLevel;
+  TVec<TIntPr> NextLevel(NNodes);
   TIntPr StartNode(StartNType, StartNId);
   CurrLevel.Add(StartNode);
   BfsLevelHV[StartNode.Val1].AddDat(StartNode.Val2, 0);
   while (CurrLevel.Len() > 0) {
     //printf("level count: %d\n", LevelCnt);
-    NextLevel.Clr();
+    TVec<TIntPr> NextLevel(NNodes);
+    NextLevel.Reduce(0);
 #pragma omp parallel for schedule(dynamic,1000)
     for (int i = 0; i < CurrLevel.Len(); i++) {
       int NId = CurrLevel[i].Val2;
@@ -313,9 +319,13 @@ void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int&
           const int OutNType = Graph->GetDstNType(EType);
           const int OutNId = Graph->GetDstNId(OutEId, EType);
           //printf("OutEId = %d, OutNType = %d, OutNId = %d\n", OutEId, OutNType, OutNId);
+          //TIntV test(100);
           if (BfsLevelHV[OutNType].GetDat(OutNId) == -1) {
             TIntPr OutNode(OutNType, OutNId);
-            NextLevel.AddMP(OutNode);
+            printf("Reached before MP2\n");
+            //test.AddAtm(OutNId);
+            NextLevel.AddAtm(OutNode);
+            printf("Reached after MP2\n");
           }
         }
       }
