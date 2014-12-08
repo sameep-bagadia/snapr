@@ -342,7 +342,7 @@ void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int&
 int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType) {
   int NTypeCnt = Graph->GetNTypeCnt();
   int ETypeCnt = Graph->GetETypeCnt();
-  const int NNodes = Graph->GetNodes();
+  const int NNodes = Graph->GetNodes() * 100;
   //int MxNId = Graph->GetMxNId();
   int NonNodeDepth = 2147483647; // INT_MAX
   int InfDepth = 2147483646; // INT_MAX - 1
@@ -355,7 +355,7 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
     int MxNId = Graph->GetMxNId(NType);
 #pragma omp parallel for schedule(dynamic,10000)
     for (int NId = 0; NId < MxNId; NId++) {
-      if (Graph->IsNode(NId)) { BfsLevelVV[NType][NId] = InfDepth; }
+      if (Graph->IsNode(NId, NType)) { BfsLevelVV[NType][NId] = InfDepth; }
       else { BfsLevelVV[NType][NId] = NonNodeDepth; }
     }
   }
@@ -378,6 +378,7 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
   
   while (!PCurNIdV->Empty()) {
     Depth++; // increase depth
+    printf("Starting depth : %d\n", Depth);
 #pragma omp parallel for schedule(dynamic,1000)
     for (int i = 0; i < PCurNIdV->Len(); i++) {
       int NId = PCurNIdV->GetVal(i);
@@ -385,13 +386,17 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
       TSVNet::TNodeI NI = Graph->GetNI(NId, NType);
       for (int EType = 0; EType < ETypeCnt; EType++) {
         for (int e = 0; e < NI.GetOutDeg(EType); e++) {
+
           const int EId = NI.GetOutEId(e, EType);
           const int OutNId = Graph->GetDstNId(EId, EType);
           const int OutNType = Graph->GetDstNType(EType);
+          //printf("OutNid : %d, OutNType: %d\n", OutNId, OutNType);
           //const int OutNId = NI.GetOutNId(e);
           if (__sync_bool_compare_and_swap(&(BfsLevelVV[OutNType][OutNId].Val), InfDepth, Depth)) {
+            //printf("before AddAtm\n");
             PNextNIdV->AddAtm(OutNId);
             PNextNTypeV->AddAtm(OutNType);
+            //printf("After AddAtm\n");
           }
         }
       }

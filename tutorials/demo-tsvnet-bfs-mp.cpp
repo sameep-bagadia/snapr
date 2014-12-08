@@ -222,7 +222,8 @@ int main(int argc, char* []) {
     int StartNType = NodeTypeV[i];
     int StartNId = NodesHV[StartNType].GetDat(TStr(NodeIdV[i]));
     //Call Bfs
-    printf("Reacehd here\n");
+    //printf("Reacehd here\n");
+    printf("NType: %d, NIdstr = %s, NId %d\n", StartNType, NodeIdV[i].CStr(), StartNId);
     BfsLevelVV.Clr();
     GetBfsLevelMMMP2(&Graph, BfsLevelVV, StartNId, StartNType);
   }
