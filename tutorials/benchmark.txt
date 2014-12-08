@@ -1,10 +1,10 @@
 Hello World!
-0.003217
+0.004695
 Tables Loaded
-1.055769
+1.060506
 Converted to Graph
-1.744834
-Pagerank completed
-69.914207
+1.697062
+Bfs completed
+29.425678
 Output stored
-70.070496
+29.425692

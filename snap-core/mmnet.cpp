@@ -74,6 +74,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
   int ETypeCnt = Graph->GetETypeCnt();
   //TIntV NV;
   TVec<TSVNet::TNodeI> NV;
+  PRankHV = TVec<TIntFltH>();
   //const double OneOver = 1.0/double(NNodes);
   for (int i = 0; i < NTypeCnt; i++) {
     TIntFltH PRankH;
@@ -139,7 +140,7 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
     //printf("%s%d\n", ctime(&t),iter);
     //int j = 0;
     //for (typename PGraph::TObj::TNodeI NI = Graph->BegNI(); NI < Graph->EndNI(); NI++, j++) {
-#pragma omp parallel for schedule(dynamic,1000)
+#pragma omp parallel for schedule(dynamic,10000)
     for (int j = 0; j < NNodes; j++) {
       TSVNet::TNodeI NI = NV[j];
       TFlt Tmp = 0;
@@ -218,4 +219,115 @@ void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double
     PRankHV[NType].AddDat(NId, PRankVV[NType][NId]);
   }
 }
+
+#endif
+
+void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int& StartNId, const int& StartNType) {
+  int NTypeCnt = Graph->GetNTypeCnt();
+  int ETypeCnt = Graph->GetETypeCnt();
+  
+  BfsLevelHV = TVec<TIntIntH>();
+  
+  
+  for (int i = 0; i < NTypeCnt; i++) {
+    TIntIntH BfsLevelH;
+    BfsLevelH.Gen(Graph->GetNodes(i));
+    BfsLevelHV.Add(BfsLevelH);
+  }
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    for (TSVNet::TNodeI NI = Graph->BegNI(NType); NI < Graph->EndNI(NType); NI++) {
+      BfsLevelHV[NType].AddDat(NI.GetId(), -1);
+    }
+  }
+  int LevelCnt = 0;
+  TVec<TIntPr> CurrLevel;
+  TVec<TIntPr> NextLevel;
+  TIntPr StartNode(StartNType, StartNId);
+  CurrLevel.Add(StartNode);
+  BfsLevelHV[StartNode.Val1].AddDat(StartNode.Val2, 0);
+  while (CurrLevel.Len() > 0) {
+    LevelCnt++;
+    //printf("level count: %d\n", LevelCnt);
+    NextLevel.Clr();
+    for (int i = 0; i < CurrLevel.Len(); i++) {
+      int NId = CurrLevel[i].Val2;
+      int NType = CurrLevel[i].Val1;
+      //printf("NId = %d, NType = %d\n", NId, NType);
+      TSVNet::TNodeI NI = Graph->GetNI(NId, NType);
+      for (int EType = 0; EType < ETypeCnt; EType++) {
+        //printf("EType = %d\n", EType);
+        for (int e = 0; e < NI.GetOutDeg(EType); e++) {
+          const int OutEId = NI.GetOutEId(e, EType);
+          const int OutNType = Graph->GetDstNType(EType);
+          const int OutNId = Graph->GetDstNId(OutEId, EType);
+          //printf("OutEId = %d, OutNType = %d, OutNId = %d\n", OutEId, OutNType, OutNId);
+          if (BfsLevelHV[OutNType].GetDat(OutNId) == -1) {
+            BfsLevelHV[OutNType].AddDat(OutNId, LevelCnt);
+            TIntPr OutNode(OutNType, OutNId);
+            NextLevel.Add(OutNode);
+          }
+        }
+      }
+    }
+    CurrLevel = NextLevel;
+  }
+}
+
+#ifdef _OPENMP
+void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int& StartNId, const int& StartNType) {
+  int NTypeCnt = Graph->GetNTypeCnt();
+  int ETypeCnt = Graph->GetETypeCnt();
+  
+  BfsLevelHV = TVec<TIntIntH>();
+  
+  
+  for (int i = 0; i < NTypeCnt; i++) {
+    TIntIntH BfsLevelH;
+    BfsLevelH.Gen(Graph->GetNodes(i));
+    BfsLevelHV.Add(BfsLevelH);
+  }
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    for (TSVNet::TNodeI NI = Graph->BegNI(NType); NI < Graph->EndNI(NType); NI++) {
+      BfsLevelHV[NType].AddDat(NI.GetId(), -1);
+    }
+  }
+  int LevelCnt = 0;
+  TVec<TIntPr> CurrLevel;
+  TVec<TIntPr> NextLevel;
+  TIntPr StartNode(StartNType, StartNId);
+  CurrLevel.Add(StartNode);
+  BfsLevelHV[StartNode.Val1].AddDat(StartNode.Val2, 0);
+  while (CurrLevel.Len() > 0) {
+    //printf("level count: %d\n", LevelCnt);
+    NextLevel.Clr();
+#pragma omp parallel for schedule(dynamic,1000)
+    for (int i = 0; i < CurrLevel.Len(); i++) {
+      int NId = CurrLevel[i].Val2;
+      int NType = CurrLevel[i].Val1;
+      //printf("NId = %d, NType = %d\n", NId, NType);
+      TSVNet::TNodeI NI = Graph->GetNI(NId, NType);
+      for (int EType = 0; EType < ETypeCnt; EType++) {
+        //printf("EType = %d\n", EType);
+        for (int e = 0; e < NI.GetOutDeg(EType); e++) {
+          const int OutEId = NI.GetOutEId(e, EType);
+          const int OutNType = Graph->GetDstNType(EType);
+          const int OutNId = Graph->GetDstNId(OutEId, EType);
+          //printf("OutEId = %d, OutNType = %d, OutNId = %d\n", OutEId, OutNType, OutNId);
+          if (BfsLevelHV[OutNType].GetDat(OutNId) == -1) {
+            TIntPr OutNode(OutNType, OutNId);
+            NextLevel.AddMP(OutNode);
+          }
+        }
+      }
+    }
+    LevelCnt++;
+    NextLevel.Merge();
+    for (int i = 0; i < NextLevel.Len(); i++) {
+      BfsLevelHV[NextLevel[i].Val1].AddDat(NextLevel[i].Val2, LevelCnt);
+    }
+    CurrLevel = NextLevel;
+  }
+}
+
+
 #endif

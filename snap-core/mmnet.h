@@ -56,7 +56,7 @@ public:
       InEIdVV[EType].Add(EId);
     }
     int GetInEId(const int& EdgeN, const int& EType) const { return InEIdVV[EType][EdgeN]; }
-    // int GetOutEId(const int& EdgeN) const { return OutEIdV[EdgeN]; }
+    int GetOutEId(const int& EdgeN, const int& EType) const { return OutEIdVV[EType][EdgeN]; }
     // int GetNbrEId(const int& EdgeN) const { return EdgeN<GetOutDeg()?GetOutEId(EdgeN):GetInEId(EdgeN-GetOutDeg()); }
     // bool IsInEId(const int& EId) const { return InEIdV.SearchBin(EId) != -1; }
     // bool IsOutEId(const int& EId) const { return OutEIdV.SearchBin(EId) != -1; }
@@ -110,6 +110,8 @@ public:
     int GetOutDeg(int EType)  { return NodeHI.GetDat().GetOutDeg(EType); }
     /// Returns ID of EdgeN-th in-edge of particular edge type.
     int GetInEId(const int& EdgeN, const int& EType) const { return NodeHI.GetDat().GetInEId(EdgeN, EType); }
+    /// Returns ID of EdgeN-th out-edge of particular edge type.
+    int GetOutEId(const int& EdgeN, const int& EType) const { return NodeHI.GetDat().GetOutEId(EdgeN, EType); }
     /*/// Returns ID of NodeN-th out-node (the node the current node points to). ##TNodeNet::TNodeI::GetOutNId
     int GetOutNId(const int& NodeN) const { return NodeHI.GetDat().GetOutNId(NodeN); }
     /// Returns ID of NodeN-th neighboring node. ##TNodeNet::TNodeI::GetNbrNId
@@ -234,8 +236,11 @@ public:
   int GetDstNType(const int& EType) { return Mapping[EType].Val2; }
   int GetSrcNId(const int& EId, const int& EType) { return EdgeHV[EType].GetDat(EId).GetSrcNId(); }
   int GetDstNId(const int& EId, const int& EType) { return EdgeHV[EType].GetDat(EId).GetDstNId(); }
-  TNode& GetNI(const int& NId, const int& NType) { return NodeHV[NType].GetDat(NId); }
+  //TNode& GetNI(const int& NId, const int& NType) { return NodeHV[NType].GetDat(NId); }
+  /// Returns an iterator referring to the node of ID NId in the network.
+  TNodeI GetNI(const int& NId, const int& NType) const { return TNodeI(NodeHV[NType].GetI(NId), this); }
   int GetMxNId(const int& NType) { return MxNIdV[NType] - 1; }
+  
   /*
   void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
   */
@@ -244,9 +249,15 @@ public:
 
 typedef TSVNet* PSVNet;
 void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
 #ifdef _OPENMP
 void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
 #endif
+
+
+
+
 
 
 #endif /* defined(snap_mmnet_h) */
