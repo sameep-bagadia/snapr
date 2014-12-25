@@ -20,4 +20,4 @@
 3 2
 ../../FlickrTables/photosNUS/tagger_tag_edges.tsv 3 0
 4 3
-../../FlickrTables/photosNUS/rand_node_ids_1000.tsv 100
+../../FlickrTables/photosNUS/rand_node_ids_1000.tsv 10

@@ -20,4 +20,4 @@
 3 2
 ../../FlickrTables/photosPASCAL/tagger_tag_edges.tsv 3 0
 4 3
-../../FlickrTables/photosPASCAL/rand_node_ids_1000.tsv 1000
+../../FlickrTables/photosPASCAL/rand_node_ids_1000.tsv 100

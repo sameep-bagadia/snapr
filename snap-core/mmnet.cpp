@@ -342,7 +342,7 @@ void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsLevelHV, const int&
 int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType) {
   int NTypeCnt = Graph->GetNTypeCnt();
   int ETypeCnt = Graph->GetETypeCnt();
-  const int NNodes = Graph->GetNodes() * 100;
+  const int NNodes = Graph->GetNodes();
   //int MxNId = Graph->GetMxNId();
   int NonNodeDepth = 2147483647; // INT_MAX
   int InfDepth = 2147483646; // INT_MAX - 1
@@ -366,8 +366,8 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
   TIntV NTypeVec1(NNodes, 0); // ensure enough capacity
   TIntV NTypeVec2(NNodes, 0); // ensure enough capacity
    */
-  TIntPrV Vec1(MxNId);
-  TIntPrV Vec2(MxNId); // ensure enough capacity
+  TIntPrV Vec1(NNodes);
+  TIntPrV Vec2(NNodes); // ensure enough capacity
   
   BfsLevelVV[StartNType][StartNId] = 0;
   /*
@@ -386,8 +386,8 @@ int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& S
   
   while (!PCurV->Empty()) {
     Depth++; // increase depth
-    printf("Starting depth : %d\n", Depth);
-#pragma omp parallel for schedule(dynamic,1000)
+    //printf("Starting depth : %d\n", Depth);
+#pragma omp parallel for schedule(dynamic,10000)
     for (int i = 0; i < PCurV->Len(); i++) {
       int NId = PCurV->GetVal(i).Val1;
       int NType = PCurV->GetVal(i).Val2;
