@@ -57,9 +57,110 @@ void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C
     if (diff < Eps) { break; }
   }
 }
+/*
+void GetSimRankMM(const PSVNet& Graph, THash<TPair<TIntPr, TIntPr>, TFlt>& SRankH, const double& C, const double& Eps, const int& MaxIter) {
+  const int NNodes = Graph->GetNodes();
+  int NTypeCnt = Graph->GetNTypeCnt();
+  int ETypeCnt = Graph->GetETypeCnt();
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    for (TSVNet::TNodeI NI = Graph->BegNI(NType); NI < Graph->EndNI(NType); NI++, j++) {
+      SRankH.AddDat(TPair<TIntPr, TIntPr>(TPair<TInt, TInt>(NType, NI.GetId()), TPair<TInt, TInt>(NType, NI.GetId())), 1.0);
+    }
+  }
+  THash<TPair<TIntPr, TIntPr>, TFlt>& SRankHOld;
+  for (int iter = 0; iter < MaxIter; iter++) {
+    //copy the entire hashmap and clear the original
+    SRankHOld = SRankH;
+    SRankH.Clr();
+    
+    //for each of the present values, add to the next set of values
+ 
+  }
+}
+*/
 
-
-
+PSVNet TSVNet::GetSubGraph(TIntV NTypeV, TIntV ETypeV) {
+  // if nodetype vector is empty, initialize it to proper node types
+  
+  TVec<bool> NTypeBool;
+  TVec<bool> ETypeBool;
+  
+  int NTypeCnt = GetNTypeCnt();
+  int ETypeCnt = GetETypeCnt();
+  
+  //initialize the vectors
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    NTypeBool.Add(false);
+  }
+  for (int EType = 0; EType < ETypeCnt; EType++) {
+    ETypeBool.Add(false);
+  }
+  
+  if (NTypeV.Empty()) {
+    for (int i = 0; i < ETypeV.Len(); i++) {
+      int EType = ETypeV[i];
+      ETypeBool[EType] = true;
+      NTypeBool[GetSrcNType(EType)] = true;
+      NTypeBool[GetDstNType(EType)] = true;
+    }
+  }
+  // if edgetype vector is empty, initialize it to proper edge types
+  else if (ETypeV.Empty()) {
+    for (int i = 0; i < NTypeV.Len(); i++) {
+      NTypeBool[NTypeV[i]] = true;
+    }
+    for (int i = 0; i < ETypeCnt; i++) {
+      if (NTypeBool[GetSrcNType(i)] && NTypeBool[GetDstNType(i)]) {
+        ETypeBool[i] = true;
+      }
+    }
+  }
+  else {
+    for (int i = 0; i < NTypeV.Len(); i++) {
+      NTypeBool[NTypeV[i]] = true;
+    }
+    for (int i = 0; i < ETypeV.Len(); i++) {
+      ETypeBool[ETypeV[i]] = true;
+    }
+  }
+  /*
+  // sort and remove duplicates in NTypeV and ETYpeV
+  NTypeV.Merge();
+  ETypeV.Merge();
+   */
+  
+  PSVNet Graph = new TSVNet();
+  //adding ntypes
+  for (int NType = 0; NType < GetNTypeCnt(); NType++) {
+    Graph->AddNType();
+  }
+  //adding etypes
+  for (int EType = 0; EType < GetETypeCnt(); EType++) {
+    Graph->AddEType(GetSrcNType(EType), GetDstNType(EType));
+  }
+  //adding nodes
+  for (int NType = 0; NType < NTypeCnt ; NType++) {
+    if (NTypeBool[NType]) {
+      for (TSVNet::TNodeI NI = BegNI(NType); NI < EndNI(NType); NI++) {
+        int NId = NI.GetId();
+        Graph->AddNode(NType, NId);
+      }
+    }
+  }
+  //adding edges
+  for (int EType = 0; EType < ETypeCnt; EType++) {
+    if (ETypeBool[EType]) {
+      for (THash<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
+        int SrcNId = it.GetDat().GetSrcNId();
+        int DstNId = it.GetDat().GetDstNId();
+        int EId = it.GetDat().GetId();
+        Graph->AddEdge(SrcNId, DstNId, EType, EId);
+      }
+    }
+  }
+  return Graph;
+  
+}
 
 
 #ifdef _OPENMP

@@ -20,4 +20,3 @@
 3 2
 ../../FlickrTables/photosPASCAL/tagger_tag_edges.tsv 3 0
 4 3
-150

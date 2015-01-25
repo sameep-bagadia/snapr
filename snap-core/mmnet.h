@@ -218,6 +218,13 @@ public:
     }
     return NodeCnt;
   }
+  int GetEdges() {
+    int EdgeCnt = 0;
+    for (int i = 0; i < EdgeHV.Len(); i++) {
+      EdgeCnt += EdgeHV[i].Len();
+    }
+    return EdgeCnt;
+  }
   int GetNodes(int NType) { return NodeHV[NType].Len(); }
   int GetNTypeCnt() { return NodeHV.Len(); }
   int GetETypeCnt() { return EdgeHV.Len(); }
@@ -245,12 +252,18 @@ public:
   void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
   */
   
+  PSVNet GetSubGraph(TIntV NTypeV, TIntV ETypeV);
+  
 };
 
 typedef TSVNet* PSVNet;
 void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
 void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
 int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType);
+//void GetSimRankMM(const PSVNet& Graph, THash<TPair<TIntPr, TIntPr>, TFlt>& SRankH, const double& C, const double& Eps, const int& MaxIter);
+
+
+
 #ifdef _OPENMP
 void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
 void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);

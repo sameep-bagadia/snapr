@@ -1,4 +1,4 @@
-#include "Snap.h"
+#include "Snap.h"
 #include <sys/time.h>
 #include <sys/resource.h>
 #include <stdio.h>
@@ -143,6 +143,8 @@ int main(int argc, char* []) {
     Mapping.Add(TPair<TInt, TInt>(SrcId, DestId));
     //Weights.Add(Wt);
   }
+  
+  /*
   char nodes_file[200];
   int NodesCnt;
   printf("Enter the filename containing bfs nodes and number of nodes to take");
@@ -167,6 +169,7 @@ int main(int argc, char* []) {
     NodeIdV.Add(NodeIdStr2);
     
   }
+  */
   
   fprintf(outfile, "Tables Loaded\n");
   PrintBenchmarks(outfile);
@@ -207,29 +210,26 @@ int main(int argc, char* []) {
     }
   }
   
+  
+  TIntV EdgeVec;
+  EdgeVec.Add(0);
+  EdgeVec.Add(2);
+  TIntV NodeVec;
+  
   fprintf(outfile, "Converted to Graph\n");
   PrintBenchmarks(outfile);
   printf("Converted to Graph\n");
+  printf("Starting subgraph\n");
   
-  //Call Pagerank
-  printf("Starting Bfs\n");
+  PSVNet Graph2 = Graph.GetSubGraph(NodeVec, EdgeVec);
   
-  TVec<TIntIntH> BfsLevelHV;
-  //GetBfsLevelMM(&Graph, BfsLevelHV, 0, 0);
-  
-  for (int i = 0; i < NodesCnt; i++) {
-    printf("starting bfs no %d / %d\n", i, NodesCnt);
-    int StartNType = NodeTypeV[i];
-    int StartNId = NodesHV[StartNType].GetDat(TStr(NodeIdV[i]));
-    //Call Bfs
-    //printf("NType: %d, NIdstr = %s, NId %d\n", StartNType, NodeIdV[i].CStr(), StartNId);
-    BfsLevelHV.Clr();
-    GetBfsLevelMM(&Graph, BfsLevelHV, StartNId, StartNType);
-  }
-  
-  fprintf(outfile, "Bfs completed\n");
+  fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
-  printf("Bfs completed\n");
+  printf("subgraph completed\n");
+  
+  printf("Original: Nodes = %d, edges = %d\n", Graph.GetNodes(), Graph.GetEdges());
+  printf("Subgraph: Nodes = %d, edges = %d\n", Graph2->GetNodes(), Graph2->GetEdges());
+
 
   //Store bfs output
   /*
@@ -248,7 +248,7 @@ int main(int argc, char* []) {
   
   
   fclose(outfile);
-  fclose(infile);
+  //fclose(infile);
   //fclose(outpr);
 }
 
