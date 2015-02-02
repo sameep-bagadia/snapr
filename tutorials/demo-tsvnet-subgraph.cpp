@@ -212,9 +212,22 @@ int main(int argc, char* []) {
   
   
   TIntV EdgeVec;
-  EdgeVec.Add(0);
-  EdgeVec.Add(2);
+  //EdgeVec.Add(0);
+  //EdgeVec.Add(2);
   TIntV NodeVec;
+  NodeVec.Add(2);
+  NodeVec.Add(3);
+  NodeVec.Add(4);
+
+
+  TIntV EdgeVec3;
+  //EdgeVec.Add(0);
+  //EdgeVec.Add(2);
+  TIntV NodeVec3;
+  NodeVec3.Add(0);
+  NodeVec3.Add(2);
+  NodeVec3.Add(3);
+  NodeVec3.Add(4);
   
   fprintf(outfile, "Converted to Graph\n");
   PrintBenchmarks(outfile);
@@ -226,9 +239,17 @@ int main(int argc, char* []) {
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
   printf("subgraph completed\n");
+
+
+  PSVNet Graph3 = Graph.GetSubGraph(NodeVec3, EdgeVec3);
+  
+  fprintf(outfile, "subgraph completed\n");
+  PrintBenchmarks(outfile);
+  printf("subgraph completed\n");
   
   printf("Original: Nodes = %d, edges = %d\n", Graph.GetNodes(), Graph.GetEdges());
   printf("Subgraph: Nodes = %d, edges = %d\n", Graph2->GetNodes(), Graph2->GetEdges());
+  printf("Subgraph: Nodes = %d, edges = %d\n", Graph3->GetNodes(), Graph3->GetEdges());
 
 
   //Store bfs output
