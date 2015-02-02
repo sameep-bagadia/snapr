@@ -6,7 +6,7 @@ include ../Makefile.config
 
 ## Main application file
 DEMOS = \
-	demo-tsvnet-subgraph \
+	demo-tsvnet-subgraph-tneanet \
 	\
 
 all: $(DEMOS)

@@ -253,6 +253,7 @@ public:
   */
   
   PSVNet GetSubGraph(TIntV NTypeV, TIntV ETypeV);
+  PNEANet GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offsets);
   
 };
 

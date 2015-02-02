@@ -163,6 +163,90 @@ PSVNet TSVNet::GetSubGraph(TIntV NTypeV, TIntV ETypeV) {
 }
 
 
+PNEANet TSVNet::GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offsets) {
+  // if nodetype vector is empty, initialize it to proper node types
+  
+  TVec<bool> NTypeBool;
+  TVec<bool> ETypeBool;
+  
+  int NTypeCnt = GetNTypeCnt();
+  int ETypeCnt = GetETypeCnt();
+  
+  //initialize the vectors
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    NTypeBool.Add(false);
+  }
+  for (int EType = 0; EType < ETypeCnt; EType++) {
+    ETypeBool.Add(false);
+  }
+  
+  if (NTypeV.Empty()) {
+    for (int i = 0; i < ETypeV.Len(); i++) {
+      int EType = ETypeV[i];
+      ETypeBool[EType] = true;
+      NTypeBool[GetSrcNType(EType)] = true;
+      NTypeBool[GetDstNType(EType)] = true;
+    }
+  }
+  // if edgetype vector is empty, initialize it to proper edge types
+  else if (ETypeV.Empty()) {
+    for (int i = 0; i < NTypeV.Len(); i++) {
+      NTypeBool[NTypeV[i]] = true;
+    }
+    for (int i = 0; i < ETypeCnt; i++) {
+      if (NTypeBool[GetSrcNType(i)] && NTypeBool[GetDstNType(i)]) {
+        ETypeBool[i] = true;
+      }
+    }
+  }
+  else {
+    for (int i = 0; i < NTypeV.Len(); i++) {
+      NTypeBool[NTypeV[i]] = true;
+    }
+    for (int i = 0; i < ETypeV.Len(); i++) {
+      ETypeBool[ETypeV[i]] = true;
+    }
+  }
+ 
+   // sort and remove duplicates in NTypeV and ETYpeV
+   //NTypeV.Merge();
+   //ETypeV.Merge();
+ 
+  
+  PNEANet Graph = new TNEANet();
+  //adding nodes
+  TInt offset = 0;
+  for (int NType = 0; NType < GetNTypeCnt(); NType++) {
+    if(NTypeBool[NType]){
+      Offsets.AddDat(NType, offset);
+      for (TSVNet::TNodeI NI = BegNI(NType); NI < EndNI(NType); NI++) {
+        int NId = NI.GetId();
+        Graph->AddNode(NId + offset);
+      }
+      offset += MxNIdV[NType];
+    }
+  }
+  
+  //adding edges
+  for (int EType = 0; EType < ETypeCnt; EType++) {
+    if (ETypeBool[EType]) {
+      int SrcNType = GetSrcNType(EType);
+      int DstNType = GetDstNType(EType);
+      for (THash<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
+        int SrcNId = it.GetDat().GetSrcNId();
+        int DstNId = it.GetDat().GetDstNId();
+        //int EId = it.GetDat().GetId();
+        int NewSrcNId = SrcNId + Offsets.GetDat(SrcNType);
+        int NewDstNId = DstNId + Offsets.GetDat(DstNType);
+        Graph->AddEdge(NewSrcNId, NewDstNId);
+      }
+    }
+  }
+  return Graph;
+  
+}
+
+
 #ifdef _OPENMP
 // Page Rank -- there are two different implementations (uncomment the desired 2 lines):
 //   Berkhin -- (the correct way) see Algorithm 1 of P. Berkhin, A Survey on PageRank Computing, Internet Mathematics, 2005
