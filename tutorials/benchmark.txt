@@ -1,14 +1,14 @@
 Hello World!
-0.004069
+0.003714
 Tables Loaded
-1.067747
+1.082115
 Converted to Graph
-1.685972
+1.686491
 subgraph completed
-1.697909
+9.057021
 subgraph completed
-1.753655
+38.538025
 subgraph completed
-1.831592
+79.206566
 Output stored
-1.831622
+79.206589

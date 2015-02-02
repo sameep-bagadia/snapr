@@ -243,20 +243,34 @@ int main(int argc, char* []) {
   printf("Converted to Graph\n");
   printf("Starting subgraph\n");
   
-  PNEANet Graph1 = Graph.GetSubGraphTNEANet(NodeVec1, EdgeVec1, Offsets1);
+  PNEANet Graph1;
+  PNEANet Graph2;
+  PNEANet Graph3;
+  
+  
+  for (int iter = 0; iter < 500; iter++) {
+    Offsets1.Clr();
+    Graph1 = Graph.GetSubGraphTNEANet(NodeVec1, EdgeVec1, Offsets1);
+  }
   
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
   printf("subgraph completed\n");
   
-  PNEANet Graph2 = Graph.GetSubGraphTNEANet(NodeVec2, EdgeVec2, Offsets2);
+  for (int iter = 0; iter < 500; iter++) {
+    Offsets2.Clr();
+    Graph2 = Graph.GetSubGraphTNEANet(NodeVec2, EdgeVec2, Offsets2);
+  }
   
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
   printf("subgraph completed\n");
   
   
-  PNEANet Graph3 = Graph.GetSubGraphTNEANet(NodeVec3, EdgeVec3, Offsets3);
+  for (int iter = 0; iter < 500; iter++) {
+    Offsets3.Clr();
+    Graph3 = Graph.GetSubGraphTNEANet(NodeVec3, EdgeVec3, Offsets3);
+  }
   
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
