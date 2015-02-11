@@ -216,14 +216,19 @@ PNEANet TSVNet::GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offsets
   PNEANet Graph = new TNEANet();
   //adding nodes
   TInt offset = 0;
+  TIntV OffsetV;
   for (int NType = 0; NType < GetNTypeCnt(); NType++) {
     if(NTypeBool[NType]){
       Offsets.AddDat(NType, offset);
+      OffsetV.Add(offset);
       for (TSVNet::TNodeI NI = BegNI(NType); NI < EndNI(NType); NI++) {
         int NId = NI.GetId();
         Graph->AddNode(NId + offset);
       }
       offset += MxNIdV[NType];
+    }
+    else {
+      OffsetV.Add(-1);
     }
   }
   
@@ -232,18 +237,19 @@ PNEANet TSVNet::GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offsets
     if (ETypeBool[EType]) {
       int SrcNType = GetSrcNType(EType);
       int DstNType = GetDstNType(EType);
+      int SrcOffset = OffsetV[SrcNType];
+      int DstOffset = OffsetV[DstNType];
       for (THash<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
         int SrcNId = it.GetDat().GetSrcNId();
         int DstNId = it.GetDat().GetDstNId();
         //int EId = it.GetDat().GetId();
-        int NewSrcNId = SrcNId + Offsets.GetDat(SrcNType);
-        int NewDstNId = DstNId + Offsets.GetDat(DstNType);
+        int NewSrcNId = SrcNId + SrcOffset;
+        int NewDstNId = DstNId + DstOffset;
         Graph->AddEdge(NewSrcNId, NewDstNId);
       }
     }
   }
   return Graph;
-  
 }
 
 
