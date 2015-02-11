@@ -190,8 +190,14 @@ public:
     IAssertR(IsEType(EType), TStr::Fmt("Edge type %d does not exist", EType)); //
     int SrcNType = Mapping[EType].Val1;
     int DstNType = Mapping[EType].Val2;
-    IAssertR(IsNode(SrcNId, SrcNType), TStr::Fmt("Node id %d, Node type %d does not exist", SrcNId, SrcNType));
-    IAssertR(IsNode(DstNId, DstNType), TStr::Fmt("Node id %d, Node type %d does not exist", DstNId, DstNType));
+    if (! IsNode(SrcNId, SrcNType)) {
+      AddNode(SrcNType, SrcNId);
+    }
+    if (! IsNode(DstNId, DstNType)) {
+      AddNode(DstNType, DstNId);
+    }
+    //IAssertR(IsNode(SrcNId, SrcNType), TStr::Fmt("Node id %d, Node type %d does not exist", SrcNId, SrcNType));
+    //IAssertR(IsNode(DstNId, DstNType), TStr::Fmt("Node id %d, Node type %d does not exist", DstNId, DstNType));
     if (EId == -1) {
       EId = MxEIdV[EType];
       MxEIdV[EType]++;

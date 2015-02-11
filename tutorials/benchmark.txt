@@ -1,14 +1,26 @@
 Hello World!
-0.002627
+0.003819
 Tables Loaded
-1.071894
-Converted to Graph
-1.677816
-subgraph completed
-8.990667
-subgraph completed
-38.273357
-subgraph completed
-94.180016
-Output stored
-94.180046
+1.104730
+Preprocessing done
+2.729084
+Inserted 10%
+3.062352
+Inserted 20%
+3.184590
+Inserted 30%
+3.446699
+Inserted 40%
+3.555364
+Inserted 50%
+3.684548
+Inserted 60%
+3.737074
+Inserted 70%
+3.788231
+Inserted 80%
+3.813065
+Inserted 90%
+3.842642
+Inserted 100%
+3.882564

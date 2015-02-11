@@ -980,7 +980,7 @@ void TNGraphMP::DelEdge(const int& SrcNId, const int& DstNId, const bool& IsDir)
   if (! IsDir) {
     { TNode& N = GetNode(SrcNId);
     const int n = N.InNIdV.SearchBin(DstNId);
-    if (n!= -1) { N.InNIdV.Del(n); } }
+    if (n!= -1) { N.InNIdV.Del(n); } }  
     { TNode& N = GetNode(DstNId);
     const int n = N.OutNIdV.SearchBin(SrcNId);
     if (n!= -1) { N.OutNIdV.Del(n); } }
