@@ -179,7 +179,7 @@ int main(int argc, char* []) {
   
   //Convert to Graph
   printf("Prerocessing\n");
-  int itercount = 500;
+  int itercount = 10;
   PSVNet Graph[itercount];
   TVec<TIntV> EdgeTypeV;
   TVec<TIntV> SrcNIdV;
