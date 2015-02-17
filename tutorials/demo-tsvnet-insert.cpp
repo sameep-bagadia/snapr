@@ -261,6 +261,23 @@ int main(int argc, char* []) {
   
   fprintf(outfile, "Preprocessing done\n");
   PrintBenchmarks(outfile);
+  printf("Preprocessing done\n");
+  //Adding nodes
+  for (int iter = 0; iter < itercount; iter++) {
+    for (int i = 0; i < NTblCnt; i++) {
+      //THash<TStr, TInt> NodesH;
+      //NodesHV.Add(NodesH);
+      int NType = NTypeV[i];
+      for (int j = 0; j < NTables[i]->GetNumRows(); j++) {
+        Graph[iter]->AddNode(NType, NodesHV[NType].GetDat(NTables[i]->GetStrVal("NodeID", j)));
+      }
+    }
+  }
+  fprintf(outfile, "Nodes added\n");
+  PrintBenchmarks(outfile);
+  printf("Nodes added\n");
+  
+  
   //Adding edges
   int num_breaks = 10;
   //int j = 1;

@@ -1,26 +1,28 @@
 Hello World!
-0.003819
+0.002583
 Tables Loaded
-1.104730
+1.402907
 Preprocessing done
-2.729084
+5.685704
+Nodes added
+7.898489
 Inserted 10%
-3.062352
+8.023650
 Inserted 20%
-3.184590
+8.118098
 Inserted 30%
-3.446699
+8.230239
 Inserted 40%
-3.555364
+8.301614
 Inserted 50%
-3.684548
+8.385768
 Inserted 60%
-3.737074
+8.451135
 Inserted 70%
-3.788231
+8.535110
 Inserted 80%
-3.813065
+8.597567
 Inserted 90%
-3.842642
+8.665366
 Inserted 100%
-3.882564
+8.751073
