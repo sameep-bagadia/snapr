@@ -1,15 +1,15 @@
 //
-//  mmnet.h
+//  mmnetmp.h
 //  snap-core
 //
-//  Created by Sameep Bagadia on 11/18/14.
-//  Copyright (c) 2014 infolab. All rights reserved.
+//  Created by Sameep Bagadia on 2/18/15.
+//  Copyright (c) 2015 infolab. All rights reserved.
 //
 
-#ifndef snap_mmnet_h
-#define snap_mmnet_h
+#ifndef snap_core_mmnetmp_h
+#define snap_core_mmnetmp_h
 
-class TSVNet {
+class TSVNetMP {
 public:
   class TNode {
   private:
@@ -58,7 +58,6 @@ public:
     int GetInEId(const int& EdgeN, const int& EType) const { return InEIdVV[EType][EdgeN]; }
     int GetOutEId(const int& EdgeN, const int& EType) const { return OutEIdVV[EType][EdgeN]; }
     
-    /*
     void SetInEIdVV(TVec<TIntV>& InVV) {
       for (int i = 0; i < InVV.Len(); i++) {
         if (InVV[i].Len() > 0) {
@@ -73,7 +72,10 @@ public:
           OutEIdVV[i].MoveFrom(OutVV[i]);
         }
       }
-    }*/
+    }
+    
+    TVec<TIntV> GetInEIdVV() { return InEIdVV; }
+    TVec<TIntV> GetOutEIdVV() { return OutEIdVV; }
     
     // int GetNbrEId(const int& EdgeN) const { return EdgeN<GetOutDeg()?GetOutEId(EdgeN):GetInEId(EdgeN-GetOutDeg()); }
     // bool IsInEId(const int& EId) const { return InEIdV.SearchBin(EId) != -1; }
@@ -101,10 +103,10 @@ public:
   private:
     typedef THash<TInt, TNode>::TIter THashIter;
     THashIter NodeHI;
-    TSVNet *Net;
+    TSVNetMP *Net;
   public:
     TNodeI() : NodeHI(), Net(NULL) { }
-    TNodeI(const THashIter& NodeHIter, const TSVNet* NetPt) : NodeHI(NodeHIter), Net((TSVNet *) NetPt) { }
+    TNodeI(const THashIter& NodeHIter, const TSVNetMP* NetPt) : NodeHI(NodeHIter), Net((TSVNetMP *) NetPt) { }
     TNodeI(const TNodeI& NodeI) : NodeHI(NodeI.NodeHI), Net(NodeI.Net) { }
     TNodeI& operator = (const TNodeI& NodeI) { NodeHI=NodeI.NodeHI; Net=NodeI.Net; return *this; }
     /// Increment iterator.
@@ -133,26 +135,26 @@ public:
     
     
     /*/// Returns ID of NodeN-th out-node (the node the current node points to). ##TNodeNet::TNodeI::GetOutNId
-    int GetOutNId(const int& NodeN) const { return NodeHI.GetDat().GetOutNId(NodeN); }
-    /// Returns ID of NodeN-th neighboring node. ##TNodeNet::TNodeI::GetNbrNId
-    int GetNbrNId(const int& NodeN) const { return NodeHI.GetDat().GetNbrNId(NodeN); }
-    /// Tests whether node with ID NId points to the current node.
-    bool IsInNId(const int& NId) const { return NodeHI.GetDat().IsInNId(NId); }
-    /// Tests whether the current node points to node with ID NId.
-    bool IsOutNId(const int& NId) const { return NodeHI.GetDat().IsOutNId(NId); }
-    /// Tests whether node with ID NId is a neighbor of the current node.
-    bool IsNbrNId(const int& NId) const { return IsOutNId(NId) || IsInNId(NId); }
-    const TNodeData& operator () () const { return NodeHI.GetDat().NodeDat; }
-    TNodeData& operator () () { return NodeHI.GetDat().GetDat(); }
-    const TNodeData& GetDat() const { return NodeHI.GetDat().GetDat(); }
-    TNodeData& GetDat() { return NodeHI.GetDat().GetDat(); }
-    const TNodeData& GetInNDat(const int& NodeN) const { return Net->GetNDat(GetInNId(NodeN)); }
-    TNodeData& GetInNDat(const int& NodeN) { return Net->GetNDat(GetInNId(NodeN)); }
-    const TNodeData& GetOutNDat(const int& NodeN) const { return Net->GetNDat(GetOutNId(NodeN)); }
-    TNodeData& GetOutNDat(const int& NodeN) { return Net->GetNDat(GetOutNId(NodeN)); }
-    const TNodeData& GetNbrNDat(const int& NodeN) const { return Net->GetNDat(GetNbrNId(NodeN)); }
-    TNodeData& GetNbrNDat(const int& NodeN) { return Net->GetNDat(GetNbrNId(NodeN)); }
-    friend class TNodeNet<TNodeData>;*/
+     int GetOutNId(const int& NodeN) const { return NodeHI.GetDat().GetOutNId(NodeN); }
+     /// Returns ID of NodeN-th neighboring node. ##TNodeNet::TNodeI::GetNbrNId
+     int GetNbrNId(const int& NodeN) const { return NodeHI.GetDat().GetNbrNId(NodeN); }
+     /// Tests whether node with ID NId points to the current node.
+     bool IsInNId(const int& NId) const { return NodeHI.GetDat().IsInNId(NId); }
+     /// Tests whether the current node points to node with ID NId.
+     bool IsOutNId(const int& NId) const { return NodeHI.GetDat().IsOutNId(NId); }
+     /// Tests whether node with ID NId is a neighbor of the current node.
+     bool IsNbrNId(const int& NId) const { return IsOutNId(NId) || IsInNId(NId); }
+     const TNodeData& operator () () const { return NodeHI.GetDat().NodeDat; }
+     TNodeData& operator () () { return NodeHI.GetDat().GetDat(); }
+     const TNodeData& GetDat() const { return NodeHI.GetDat().GetDat(); }
+     TNodeData& GetDat() { return NodeHI.GetDat().GetDat(); }
+     const TNodeData& GetInNDat(const int& NodeN) const { return Net->GetNDat(GetInNId(NodeN)); }
+     TNodeData& GetInNDat(const int& NodeN) { return Net->GetNDat(GetInNId(NodeN)); }
+     const TNodeData& GetOutNDat(const int& NodeN) const { return Net->GetNDat(GetOutNId(NodeN)); }
+     TNodeData& GetOutNDat(const int& NodeN) { return Net->GetNDat(GetOutNId(NodeN)); }
+     const TNodeData& GetNbrNDat(const int& NodeN) const { return Net->GetNDat(GetNbrNId(NodeN)); }
+     TNodeData& GetNbrNDat(const int& NodeN) { return Net->GetNDat(GetNbrNId(NodeN)); }
+     friend class TNodeNet<TNodeData>;*/
   };
   
   
@@ -168,10 +170,10 @@ private:
   
 public:
   typedef THash<TInt, TNode>::TIter THashIter;
-  typedef TSVNet* PSVNet;
+  typedef TSVNetMP* PSVNetMP;
   
   
-  TSVNet(): NodeHV(), EdgeHV(), MxNIdV(), MxEIdV() { }
+  TSVNetMP(): NodeHV(), EdgeHV(), MxNIdV(), MxEIdV() { }
   
   TInt AddNType() {
     THash<TInt, TNode> NodeH;
@@ -273,51 +275,58 @@ public:
   /// Returns an iterator referring to the node of ID NId in the network.
   TNodeI GetNI(const int& NId, const int& NType) const { return TNodeI(NodeHV[NType].GetI(NId), this); }
   int GetMxNId(const int& NType) { return MxNIdV[NType] - 1; }
+  int GetMxEId(const int& EType) { return MxEIdV[EType] - 1; }
+  void SetMxNId(const int& NType, const TInt& MxNId) { MxNIdV[NType] = MxNId; }
+  void SetMxEId(const int& EType, const TInt& MxEId) { MxEIdV[EType] = MxEId; }
   
   /*
-  void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
-  */
+   void GetPageRankMM(const PSVNetMP& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+   */
   
-  /*
   void ReserveNodes(const int& NType, const int& Nodes) { if(Nodes > 0) { NodeHV[NType].Gen(Nodes); } }
   void ReserveEdges(const int& EType, const int& Edges) { if(Edges > 0) { EdgeHV[EType].Gen(Edges); } }
   //void SetEdges(const int& EType, )
-  void AddEdgeToHash(const TInt& EId, const TInt& SrcNId, const TInt& DestNId, const TInt& EType) {
-    int EdgeIdx = abs((EId.GetPrimHashCd()) % EdgeHV[EType].GetReservedKeyIds());
-    int EdgeKeyId = EdgeHV[EType].AddKey13(EdgeIdx, EId);
-    EdgeHV[EType][EdgeKeyId] = TEdge(EId, SrcNId, DestNId, EType);
+  void AddEdgeToHash(const TInt& EId, const TInt& SrcNId, const TInt& DstNId, const TInt& EType) {
+    //int EdgeIdx = abs((EId.GetPrimHashCd()) % EdgeHV[EType].GetReservedKeyIds());
+    //int EdgeKeyId = EdgeHV[EType].AddKey13(EdgeIdx, EId);
+    //EdgeHV[EType][EdgeKeyId] = TEdge(EId, SrcNId, DstNId, EType);
+    EdgeHV[EType].AddDat(EId, TEdge(EId, SrcNId, DstNId, EType));
   }
   void AddNodeWithEdges(const TInt& NId, const TInt& NType, TVec<TIntV>& InEIdVV, TVec<TIntV>& OutEIdVV) {
-    int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
-    int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
+    //int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
+    //int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
+    
     int ETypeCnt = InEIdVV.Len();
-    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
+    NodeHV[NType].AddDat(NId, TNode(NId, NType, ETypeCnt));
+    int NodeKeyId = NodeHV[NType].GetKeyId(NId);
+    //NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
     NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
     NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
-  }*/
+  }
   
   
-  PSVNet GetSubGraph(TIntV NTypeV, TIntV ETypeV);
+  PSVNetMP GetSubGraph(TIntV NTypeV, TIntV ETypeV);
   PNEANet GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offsets);
+  
+#ifdef _OPENMP
+  PSVNetMP GetSubGraphMP(TIntV NTypeV, TIntV ETypeV);
+#endif
   
 };
 
-typedef TSVNet* PSVNet;
-void GetPageRankMM(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
-void GetBfsLevelMM(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
-int GetBfsLevelMMMP2(const PSVNet& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType);
-//void GetSimRankMM(const PSVNet& Graph, THash<TPair<TIntPr, TIntPr>, TFlt>& SRankH, const double& C, const double& Eps, const int& MaxIter);
+typedef TSVNetMP* PSVNetMP;
+void GetPageRankMM(const PSVNetMP& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+void GetBfsLevelMM(const PSVNetMP& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
+int GetBfsLevelMMMP2(const PSVNetMP& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType);
+//void GetSimRankMM(const PSVNetMP& Graph, THash<TPair<TIntPr, TIntPr>, TFlt>& SRankH, const double& C, const double& Eps, const int& MaxIter);
 
 
 
 #ifdef _OPENMP
-void GetPageRankMMMP2(const PSVNet& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
-void GetBfsLevelMMMP(const PSVNet& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
+void GetPageRankMMMP2(const PSVNetMP& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
+void GetBfsLevelMMMP(const PSVNetMP& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
 #endif
 
 
 
-
-
-
-#endif /* defined(snap_mmnet_h) */
+#endif

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7E8D1D9E1A1D6F4A00A32CD4 /* mmnet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7E44AAB71A1BEE4500B963F2 /* mmnet.cpp */; };
+		7EF2D8971A94987900C94AA7 /* mmnetmp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7EF2D8961A94987900C94AA7 /* mmnetmp.cpp */; };
 		848A6F9C16D0631500E6F7D3 /* testSnap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 846313AF16CF5BCA003F2BAE /* testSnap.cpp */; };
 		848A6F9E16D0633300E6F7D3 /* Snap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 846313A716CF5BCA003F2BAE /* Snap.cpp */; };
 		848A6FC116D0691C00E6F7D3 /* alg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8463136B16CF5BCA003F2BAE /* alg.cpp */; };
@@ -306,6 +307,8 @@
 /* Begin PBXFileReference section */
 		7E44AAB71A1BEE4500B963F2 /* mmnet.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mmnet.cpp; sourceTree = "<group>"; };
 		7E44AAB81A1BEE4500B963F2 /* mmnet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mmnet.h; sourceTree = "<group>"; };
+		7EF2D8931A94977D00C94AA7 /* mmnetmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mmnetmp.h; sourceTree = "<group>"; };
+		7EF2D8961A94987900C94AA7 /* mmnetmp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mmnetmp.cpp; sourceTree = "<group>"; };
 		8463136B16CF5BCA003F2BAE /* alg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = alg.cpp; sourceTree = "<group>"; };
 		8463136C16CF5BCA003F2BAE /* alg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = alg.h; sourceTree = "<group>"; };
 		8463136D16CF5BCA003F2BAE /* anf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = anf.cpp; sourceTree = "<group>"; };
@@ -845,6 +848,8 @@
 				846313B416CF5BCA003F2BAE /* util.h */,
 				7E44AAB71A1BEE4500B963F2 /* mmnet.cpp */,
 				7E44AAB81A1BEE4500B963F2 /* mmnet.h */,
+				7EF2D8931A94977D00C94AA7 /* mmnetmp.h */,
+				7EF2D8961A94987900C94AA7 /* mmnetmp.cpp */,
 			);
 			name = "snap-core";
 			sourceTree = "<group>";
@@ -1506,6 +1511,7 @@
 				848A6FE816D0691C00E6F7D3 /* subgraph.cpp in Sources */,
 				848A6FE916D0691C00E6F7D3 /* subgraph.h in Sources */,
 				848A6FEA16D0691C00E6F7D3 /* testSnap.cpp in Sources */,
+				7EF2D8971A94987900C94AA7 /* mmnetmp.cpp in Sources */,
 				848A6FEB16D0691C00E6F7D3 /* timenet.cpp in Sources */,
 				848A6FEC16D0691C00E6F7D3 /* timenet.h in Sources */,
 				848A6FED16D0691C00E6F7D3 /* triad.h in Sources */,
