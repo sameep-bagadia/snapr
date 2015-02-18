@@ -149,7 +149,7 @@ PSVNetMP TSVNetMP::GetSubGraph(TIntV NTypeV, TIntV ETypeV) {
   //adding edges
   for (int EType = 0; EType < ETypeCnt; EType++) {
     if (ETypeBool[EType]) {
-      for (THash<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
+      for (THashMP<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
         int SrcNId = it.GetDat().GetSrcNId();
         int DstNId = it.GetDat().GetDstNId();
         int EId = it.GetDat().GetId();
@@ -243,6 +243,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
           Graph->AddNodeWithEdges(NId, NType, InEIdVV, OutEIdVV);
         }
       }
+      Graph->SetNCnt(NType, GetNodes(NType));
     }
   }
   //adding edges
@@ -258,6 +259,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
           Graph->AddEdgeToHash(EId, SrcNId, DstNId, EType);
         }
       }
+      Graph->SetECnt(EType, GetEdges(EType));
     }
   }
   return Graph;
@@ -342,7 +344,7 @@ PNEANet TSVNetMP::GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offse
       int DstNType = GetDstNType(EType);
       int SrcOffset = OffsetV[SrcNType];
       int DstOffset = OffsetV[DstNType];
-      for (THash<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
+      for (THashMP<TInt, TEdge>::TIter it = EdgeHV[EType].BegI(); it < EdgeHV[EType].EndI(); it++) {
         int SrcNId = it.GetDat().GetSrcNId();
         int DstNId = it.GetDat().GetDstNId();
         //int EId = it.GetDat().GetId();

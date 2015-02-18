@@ -101,7 +101,7 @@ public:
   
   class TNodeI {
   private:
-    typedef THash<TInt, TNode>::TIter THashIter;
+    typedef THashMP<TInt, TNode>::TIter THashIter;
     THashIter NodeHI;
     TSVNetMP *Net;
   public:
@@ -161,22 +161,22 @@ public:
 private:
   
   
-  TVec<THash<TInt, TNode> > NodeHV;
-  TVec<THash<TInt, TEdge> > EdgeHV;
+  TVec<THashMP<TInt, TNode> > NodeHV;
+  TVec<THashMP<TInt, TEdge> > EdgeHV;
   TIntPrV Mapping;
   TIntV MxNIdV;
   TIntV MxEIdV;
   
   
 public:
-  typedef THash<TInt, TNode>::TIter THashIter;
+  typedef THashMP<TInt, TNode>::TIter THashIter;
   typedef TSVNetMP* PSVNetMP;
   
   
   TSVNetMP(): NodeHV(), EdgeHV(), MxNIdV(), MxEIdV() { }
   
   TInt AddNType() {
-    THash<TInt, TNode> NodeH;
+    THashMP<TInt, TNode> NodeH;
     NodeHV.Add(NodeH);
     MxNIdV.Add(0);
     return NodeHV.Len() - 1;
@@ -185,12 +185,12 @@ public:
   TInt AddEType(const TInt& SrcNType, const TInt& DstNType) {
     Mapping.Add(TIntPr(SrcNType, DstNType));
     for (int i = 0; i < NodeHV.Len(); i++) {
-      for (THashKeyDatI<TInt, TNode> it = NodeHV[i].BegI(); it != NodeHV[i].EndI(); it++) {
+      for (THashMPKeyDatI<TInt, TNode> it = NodeHV[i].BegI(); it != NodeHV[i].EndI(); it++) {
         it.GetDat().AddEType();
       }
     }
     MxEIdV.Add(0);
-    EdgeHV.Add(THash<TInt, TEdge>());
+    EdgeHV.Add(THashMP<TInt, TEdge>());
     return Mapping.Len() - 1;
   }
   
@@ -254,6 +254,7 @@ public:
     return EdgeCnt;
   }
   int GetNodes(int NType) { return NodeHV[NType].Len(); }
+  int GetEdges(int EType) { return EdgeHV[EType].Len(); }
   int GetNTypeCnt() { return NodeHV.Len(); }
   int GetETypeCnt() { return EdgeHV.Len(); }
   
@@ -278,6 +279,8 @@ public:
   int GetMxEId(const int& EType) { return MxEIdV[EType] - 1; }
   void SetMxNId(const int& NType, const TInt& MxNId) { MxNIdV[NType] = MxNId; }
   void SetMxEId(const int& EType, const TInt& MxEId) { MxEIdV[EType] = MxEId; }
+  void SetNCnt(const TInt& NType, const TInt& L) { NodeHV[NType].SetLen(L); }
+  void SetECnt(const TInt& EType, const TInt& L) { EdgeHV[EType].SetLen(L); }
   
   /*
    void GetPageRankMM(const PSVNetMP& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
@@ -287,19 +290,15 @@ public:
   void ReserveEdges(const int& EType, const int& Edges) { if(Edges > 0) { EdgeHV[EType].Gen(Edges); } }
   //void SetEdges(const int& EType, )
   void AddEdgeToHash(const TInt& EId, const TInt& SrcNId, const TInt& DstNId, const TInt& EType) {
-    //int EdgeIdx = abs((EId.GetPrimHashCd()) % EdgeHV[EType].GetReservedKeyIds());
-    //int EdgeKeyId = EdgeHV[EType].AddKey13(EdgeIdx, EId);
-    //EdgeHV[EType][EdgeKeyId] = TEdge(EId, SrcNId, DstNId, EType);
-    EdgeHV[EType].AddDat(EId, TEdge(EId, SrcNId, DstNId, EType));
+    int EdgeIdx = abs((EId.GetPrimHashCd()) % EdgeHV[EType].GetReservedKeyIds());
+    int EdgeKeyId = EdgeHV[EType].AddKey13(EdgeIdx, EId);
+    EdgeHV[EType][EdgeKeyId] = TEdge(EId, SrcNId, DstNId, EType);
   }
   void AddNodeWithEdges(const TInt& NId, const TInt& NType, TVec<TIntV>& InEIdVV, TVec<TIntV>& OutEIdVV) {
-    //int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
-    //int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
-    
+    int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
+    int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
     int ETypeCnt = InEIdVV.Len();
-    NodeHV[NType].AddDat(NId, TNode(NId, NType, ETypeCnt));
-    int NodeKeyId = NodeHV[NType].GetKeyId(NId);
-    //NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
+    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
     NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
     NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
   }
@@ -308,9 +307,9 @@ public:
   PSVNetMP GetSubGraph(TIntV NTypeV, TIntV ETypeV);
   PNEANet GetSubGraphTNEANet(TIntV NTypeV, TIntV ETypeV, TIntIntH& Offsets);
   
-#ifdef _OPENMP
+  #ifdef _OPENMP
   PSVNetMP GetSubGraphMP(TIntV NTypeV, TIntV ETypeV);
-#endif
+  #endif
   
 };
 
@@ -318,7 +317,7 @@ typedef TSVNetMP* PSVNetMP;
 void GetPageRankMM(const PSVNetMP& Graph, TVec<TIntFltH>& PRankHV, const double& C, const double& Eps, const int& MaxIter);
 void GetBfsLevelMM(const PSVNetMP& Graph, TVec<TIntIntH>& BfsHV, const int& StartNId, const int& StartNType);
 int GetBfsLevelMMMP2(const PSVNetMP& Graph, TVec<TIntV >& BfsLevelVV, const int& StartNId, const int& StartNType);
-//void GetSimRankMM(const PSVNetMP& Graph, THash<TPair<TIntPr, TIntPr>, TFlt>& SRankH, const double& C, const double& Eps, const int& MaxIter);
+//void GetSimRankMM(const PSVNetMP& Graph, THashMP<TPair<TIntPr, TIntPr>, TFlt>& SRankH, const double& C, const double& Eps, const int& MaxIter);
 
 
 

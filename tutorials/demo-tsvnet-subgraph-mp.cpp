@@ -201,6 +201,7 @@ int main(int argc, char* []) {
     for (int j = 0; j < NTables[i]->GetNumRows(); j++) {
       NodesHV[i].AddDat(NTables[i]->GetStrVal("NodeID", j), Graph.AddNode(NType));
     }
+    Graph.SetNCnt(i, NTables[i]->GetNumRows());
   }
   printf("a\n");
   //Adding edges
@@ -214,6 +215,7 @@ int main(int argc, char* []) {
       int DstNId = NodesHV[DstNType].GetDat(ETables[i]->GetStrVal("DstID", j));
       Graph.AddEdge(SrcNId, DstNId, EType);
     }
+    Graph.SetECnt(i, ETables[i]->GetNumRows());
   }
   printf("a\n");
   
@@ -285,6 +287,7 @@ int main(int argc, char* []) {
   printf("Subgraph1: Nodes = %d, edges = %d\n", Graph1->GetNodes(), Graph1->GetEdges());
   printf("Subgraph2: Nodes = %d, edges = %d\n", Graph2->GetNodes(), Graph2->GetEdges());
   printf("Subgraph3: Nodes = %d, edges = %d\n", Graph3->GetNodes(), Graph3->GetEdges());
+  printf("%d\n", Graph.GetSrcNId(2, 0));
   
   
   //Store bfs output
