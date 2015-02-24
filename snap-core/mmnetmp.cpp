@@ -236,7 +236,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       int MaxKeys = NodeHV[NType].GetMxKeyIds();
       #pragma omp parallel for schedule(dynamic,1000)
       for (int KeyId = NodeHV[NType].FFirstKeyId(); KeyId < MaxKeys; KeyId++) {
-        if (NodeHV[NType].IsKeyId(KeyId)) {
+        if (NodeHV[NType].IsKeyId2(KeyId)) {
           TInt NId = NodeHV[NType].GetKey(KeyId);
           TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVV();
           TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVV();
@@ -252,7 +252,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       int MaxKeys = EdgeHV[EType].GetMxKeyIds();
       #pragma omp parallel for schedule(dynamic,10000)
       for (int KeyId = EdgeHV[EType].FFirstKeyId(); KeyId < MaxKeys; KeyId++) {
-        if (EdgeHV[EType].IsKeyId(KeyId)) {
+        if (EdgeHV[EType].IsKeyId2(KeyId)) {
           TInt EId = EdgeHV[EType].GetKey(KeyId);
           TInt SrcNId = EdgeHV[EType][KeyId].GetSrcNId();
           TInt DstNId = EdgeHV[EType][KeyId].GetDstNId();

@@ -187,6 +187,8 @@ public:
   bool IsKey(const TKey& Key, int& KeyId) const { KeyId=GetKeyId(Key); return KeyId!=-1;}
   bool IsKeyId(const int& KeyId) const {
     return (0<=KeyId)&&(KeyId<Table.Len())&&(Table[KeyId].HashCd!=-1);}
+  bool IsKeyId2(const int& KeyId) const {
+    return (0<=KeyId)&&(Table[KeyId].HashCd!=-1);}
   const TDat& GetDat(const TKey& Key) const {return Table[GetKeyId(Key)].Dat;}
   TDat& GetDat(const TKey& Key){return Table[GetKeyId(Key)].Dat;}
 //  TKeyDatP GetKeyDat(const int& KeyId) const {

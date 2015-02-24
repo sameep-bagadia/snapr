@@ -203,7 +203,7 @@ int main(int argc, char* []) {
     }
     Graph.SetNCnt(i, NTables[i]->GetNumRows());
   }
-  printf("a\n");
+  //printf("a\n");
   //Adding edges
   for (int i = 0; i < ETblCnt; i++) {
     int EType = ETypeV[i];
@@ -217,7 +217,7 @@ int main(int argc, char* []) {
     }
     Graph.SetECnt(i, ETables[i]->GetNumRows());
   }
-  printf("a\n");
+  //printf("a\n");
   
   TIntV EdgeVec1;
   //EdgeVec.Add(0);
@@ -247,7 +247,7 @@ int main(int argc, char* []) {
   NodeVec3.Add(4);
   //TIntIntH Offsets3;
   
-  int iter_count = 10;
+  int iter_count = 100;
   fprintf(outfile, "Converted to Graph\n");
   PrintBenchmarks(outfile);
   printf("Converted to Graph\n");
