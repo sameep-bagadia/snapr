@@ -16,7 +16,12 @@ public:
     TInt Id, Type;
     TVec<TIntV > InEIdVV, OutEIdVV;
   public:
-    TNode() : Id(-1), Type(-1), InEIdVV(), OutEIdVV() { }
+    TNode() : Id(-1), Type(-1), InEIdVV(), OutEIdVV() {
+      for (int i = 0; i < 10; i++) {
+        InEIdVV.Add(TIntV());
+        OutEIdVV.Add(TIntV());
+      }
+    }
     TNode(const int& NId, const int& NType, const int& ETypeCnt) : Id(NId), Type(NType), InEIdVV(), OutEIdVV() {
       for (int i = 0; i < ETypeCnt; i++) {
         InEIdVV.Add(TIntV());
@@ -298,7 +303,7 @@ public:
     int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
     int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
     int ETypeCnt = InEIdVV.Len();
-    NodeHV[NType][NodeKeyId] = TNode(NId, NType, 0);
+    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
     //NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
     //NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
   }
