@@ -23,6 +23,8 @@ public:
       }
     }
     TNode(const int& NId, const int& NType, const int& ETypeCnt) : Id(NId), Type(NType), InEIdVV(), OutEIdVV() {
+      InEIdVV.Clr();
+      OutEIdVV.Clr();
       for (int i = 0; i < ETypeCnt; i++) {
         InEIdVV.Add(TIntV());
         OutEIdVV.Add(TIntV());
