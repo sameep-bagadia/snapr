@@ -247,7 +247,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
     }
   }
   //adding edges
-  /*
+  
   for (int EType = 0; EType < ETypeCnt; EType++) {
     if (ETypeBool[EType]) {
       int MaxKeys = EdgeHV[EType].GetMxKeyIds();
@@ -262,7 +262,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       }
       Graph->SetECnt(EType, GetEdges(EType));
     }
-  }*/
+  }
   return Graph;
   
 }
