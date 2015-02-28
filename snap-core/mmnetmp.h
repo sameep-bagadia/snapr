@@ -299,8 +299,8 @@ public:
     int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
     int ETypeCnt = InEIdVV.Len();
     NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
-    NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
-    NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
+    //NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
+    //NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
   }
   
   

@@ -240,7 +240,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
           TInt NId = NodeHV[NType].GetKey(KeyId);
           TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVV();
           TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVV();
-          //Graph->AddNodeWithEdges(NId, NType, InEIdVV, OutEIdVV);
+          Graph->AddNodeWithEdges(NId, NType, InEIdVV, OutEIdVV);
         }
       }
       Graph->SetNCnt(NType, GetNodes(NType));
