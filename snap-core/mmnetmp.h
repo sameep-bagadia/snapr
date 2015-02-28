@@ -298,7 +298,7 @@ public:
     int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
     int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
     int ETypeCnt = InEIdVV.Len();
-    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
+    NodeHV[NType][NodeKeyId] = TNode(NId, NType, 0);
     //NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
     //NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
   }
