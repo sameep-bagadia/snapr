@@ -16,15 +16,8 @@ public:
     TInt Id, Type;
     TVec<TIntV > InEIdVV, OutEIdVV;
   public:
-    TNode() : Id(-1), Type(-1), InEIdVV(), OutEIdVV() {
-      for (int i = 0; i < 10; i++) {
-        InEIdVV.Add(TIntV());
-        OutEIdVV.Add(TIntV());
-      }
-    }
+    TNode() : Id(-1), Type(-1), InEIdVV(), OutEIdVV() { }
     TNode(const int& NId, const int& NType, const int& ETypeCnt) : Id(NId), Type(NType), InEIdVV(), OutEIdVV() {
-      InEIdVV.Clr();
-      OutEIdVV.Clr();
       for (int i = 0; i < ETypeCnt; i++) {
         InEIdVV.Add(TIntV());
         OutEIdVV.Add(TIntV());
@@ -308,6 +301,16 @@ public:
     NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
     //NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
     //NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
+  }
+  TInt AddNodeToHash(const TInt& NId, const TInt& NType, const TInt& ETypeCnt) {
+    int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
+    int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
+    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
+    return NodeKeyId;
+  }
+  void AddEdgesToNode(const TInt& NType, const TInt& NodeKeyId, TVec<TIntV>& InEIdVV, TVec<TIntV>& OutEIdVV) {
+    NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
+    NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
   }
   
   

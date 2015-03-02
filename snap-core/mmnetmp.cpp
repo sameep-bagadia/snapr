@@ -231,6 +231,35 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
   }
   
   //adding nodes
+  TIntV NTypeVec;
+  //TIntV NIdVec;
+  TIntV NodeKeyIdVec;
+  TIntV KeyIdVec;
+  for (int NType = 0; NType < NTypeCnt; NType++) {
+    if (NTypeBool[NType]) {
+      for (int KeyId = NodeHV[NType].FFirstKeyId(); KeyId < MaxKeys; KeyId++) {
+        if (NodeHV[NType].IsKeyId2(KeyId)) {
+          TInt NId = NodeHV[NType].GetKey(KeyId);
+          TInt NodeKeyId = Graph->AddNodeToHash(NId, NType, ETypeCnt);
+          NTypeVec.Add(NType);
+          //NIdVec.Add(NId);
+          NodeKeyIdVec.Add(NodeKeyId);
+          KeyIdVec.Add(KeyId);
+        }
+      }
+      Graph->SetNCnt(NType, GetNodes(NType));
+    }
+  }
+  
+  //adding edges to nodes
+  TInt NodeCnt = NIdVec.Len();
+  #pragma omp parallel for schedule(dynamic,10000)
+  for (int i = 0; i < NodeCnt; i++) {
+    TInt NType = NTypeVec[i];
+    TInt KeyId = KeyIdVec[i];
+    Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], NodeHV[NType][KeyId].GetInEIdVV(), NodeHV[NType][KeyId].GetOutEIdVV());
+  }
+  /*
   for (int NType = 0; NType < NTypeCnt ; NType++) {
     if (NTypeBool[NType]) {
       int MaxKeys = NodeHV[NType].GetMxKeyIds();
@@ -240,14 +269,14 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
           TInt NId = NodeHV[NType].GetKey(KeyId);
           TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVV();
           TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVV();
-          Graph->AddNodeWithEdges(NId, NType, InEIdVV, OutEIdVV);
+          Graph->AddEdgesToNode(NId, NType, InEIdVV, OutEIdVV);
         }
       }
       Graph->SetNCnt(NType, GetNodes(NType));
     }
-  }
-  //adding edges
+  }*/
   
+  //adding edges
   for (int EType = 0; EType < ETypeCnt; EType++) {
     if (ETypeBool[EType]) {
       int MaxKeys = EdgeHV[EType].GetMxKeyIds();
