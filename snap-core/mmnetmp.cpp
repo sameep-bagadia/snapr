@@ -235,6 +235,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
   //TIntV NIdVec;
   TIntV NodeKeyIdVec;
   TIntV KeyIdVec;
+  #pragma omp parallel for schedule(dynamic, 1)
   for (int NType = 0; NType < NTypeCnt; NType++) {
     if (NTypeBool[NType]) {
       int MaxKeys = NodeHV[NType].GetMxKeyIds();
