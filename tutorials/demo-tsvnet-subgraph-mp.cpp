@@ -247,7 +247,7 @@ int main(int argc, char* []) {
   NodeVec3.Add(4);
   //TIntIntH Offsets3;
   
-  int iter_count = 100;
+  int iter_count = 10;
   fprintf(outfile, "Converted to Graph\n");
   PrintBenchmarks(outfile);
   printf("Converted to Graph\n");
