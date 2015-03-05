@@ -165,6 +165,8 @@ PSVNetMP TSVNetMP::GetSubGraph(TIntV NTypeV, TIntV ETypeV) {
 PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
   // if nodetype vector is empty, initialize it to proper node types
   
+  float start = omp_get_wtime();
+  
   TVec<bool> NTypeBool;
   TVec<bool> ETypeBool;
   
@@ -230,6 +232,9 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
     }
   }
   
+  TimeV[0] += omp_get_wtime() - start;
+  start = omp_get_wtime();
+  
   //adding nodes
   TIntV NTypeVec;
   //TIntV NIdVec;
@@ -252,10 +257,11 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       Graph->SetNCnt(NType, GetNodes(NType));
     }
   }
-  
+  TimeV[1] += omp_get_wtime() - start;
+  start = omp_get_wtime();
   //adding edges to nodes
   TInt NodeCnt = NTypeVec.Len();
-  #pragma omp parallel for schedule(dynamic,1000)
+  #pragma omp parallel for schedule(dynamic,10000)
   for (int i = 0; i < NodeCnt; i++) {
     TInt NType = NTypeVec[i];
     TInt KeyId = KeyIdVec[i];
@@ -263,6 +269,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
     TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVV();
     Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], InEIdVV, OutEIdVV);
   }
+  
   /*
   for (int NType = 0; NType < NTypeCnt ; NType++) {
     if (NTypeBool[NType]) {
@@ -279,8 +286,8 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       Graph->SetNCnt(NType, GetNodes(NType));
     }
   }*/
-  
-  
+  TimeV[2] += omp_get_wtime() - start;
+  start = omp_get_wtime();
   //adding edges
   for (int EType = 0; EType < ETypeCnt; EType++) {
     if (ETypeBool[EType]) {
@@ -297,6 +304,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       Graph->SetECnt(EType, GetEdges(EType));
     }
   }
+  TimeV[3] += omp_get_wtime() - start;
   return Graph;
   
 }

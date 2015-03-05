@@ -257,6 +257,7 @@ int main(int argc, char* []) {
   PSVNetMP Graph2;
   PSVNetMP Graph3;
   
+  Graph.InitializeTimeV(4);
   
   for (int iter = 0; iter < iter_count; iter++) {
     Graph1 = Graph.GetSubGraphMP(NodeVec1, EdgeVec1);
@@ -264,23 +265,27 @@ int main(int argc, char* []) {
   
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
+  Graph.PrintTimeV(outfile);
   printf("subgraph completed\n");
   
+  Graph.InitializeTimeV(4);
   for (int iter = 0; iter < iter_count; iter++) {
     Graph2 = Graph.GetSubGraphMP(NodeVec2, EdgeVec2);
   }
   
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
+  Graph.PrintTimeV(outfile);
   printf("subgraph completed\n");
   
-  
+  Graph.InitializeTimeV(4);
   for (int iter = 0; iter < iter_count; iter++) {
     Graph3 = Graph.GetSubGraphMP(NodeVec3, EdgeVec3);
   }
   
   fprintf(outfile, "subgraph completed\n");
   PrintBenchmarks(outfile);
+  Graph.PrintTimeV(outfile);
   printf("subgraph completed\n");
   
   printf("Original: Nodes = %d, edges = %d\n", Graph.GetNodes(), Graph.GetEdges());

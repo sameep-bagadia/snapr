@@ -168,12 +168,29 @@ private:
   TIntV MxEIdV;
   
   
+  
+  
 public:
   typedef THashMP<TInt, TNode>::TIter THashIter;
   typedef TSVNetMP* PSVNetMP;
   
+  TFltV TimeV;
   
   TSVNetMP(): NodeHV(), EdgeHV(), MxNIdV(), MxEIdV() { }
+  
+  void InitializeTimeV(int n) {
+    TimeV.Clr();
+    for (int i = 0; i < n; i++) {
+      TimeV.Add(0);
+    }
+  }
+  
+  void PrintTimeV(FILE* outfile) {
+    for (int i = 0; i < TimeV.Len(); i++) {
+      fprintf(outfile, "%f ", TimeV[i].Val);
+    }
+    fprintf(outfile, "\n");
+  }
   
   TInt AddNType() {
     THashMP<TInt, TNode> NodeH;
