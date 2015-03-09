@@ -262,7 +262,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
   //adding edges to nodes
   TInt NodeCnt = NTypeVec.Len();
   //TIntV test(NodeCnt);
-  #pragma omp parallel for schedule(dynamic,10000)
+  #pragma omp parallel for schedule(dynamic,1000)
   for (int i = 0; i < NodeCnt; i++) {
     TInt NType = NTypeVec[i];
     TInt KeyId = KeyIdVec[i];
