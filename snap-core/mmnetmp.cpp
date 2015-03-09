@@ -261,13 +261,15 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
   start = omp_get_wtime();
   //adding edges to nodes
   TInt NodeCnt = NTypeVec.Len();
+  TIntV test(NodeCnt);
   #pragma omp parallel for schedule(dynamic,10000)
   for (int i = 0; i < NodeCnt; i++) {
     TInt NType = NTypeVec[i];
     TInt KeyId = KeyIdVec[i];
     TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVV();
     TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVV();
-    printf("%d %d\n", InEIdVV.Len(), OutEIdVV.Len());
+    test[i] = InEIdVV.Len() + OutEIdVV.Len();
+    //printf("%d %d\n", InEIdVV.Len(), OutEIdVV.Len());
     //Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], InEIdVV, OutEIdVV);
   }
   
@@ -306,6 +308,11 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
     }
   }
   TimeV[3] += omp_get_wtime() - start;
+  
+  int test_sum = 0;
+  for (int i = 0; i < NodeCnt; i++) {test_sum += test[i];}
+  printf("%d\n", test_sum);
+  
   return Graph;
   
 }
