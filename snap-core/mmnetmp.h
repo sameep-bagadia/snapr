@@ -71,21 +71,33 @@ public:
     int GetInEId(const int& EdgeN, const int& EType) const { return InEIdVV[EType][EdgeN]; }
     int GetOutEId(const int& EdgeN, const int& EType) const { return OutEIdVV[EType][EdgeN]; }
     
-    void SetInEIdVV(TVec<TIntV>& InVV) {
+    void SetInEIdVV(const TVec<TIntV>& InVV, const TVec<bool>& ETypeBool) {
       for (int i = 0; i < InVV.Len(); i++) {
-        if (InVV[i].Len() > 0) {
-          InEIdVV[i].MoveFrom(InVV[i]);
+        if (ETypeBool[i] && (InVV[i].Len() > 0)) {
+          for (int j = 0; j < InVV[i].Len(); j++) {
+            InEIdVV[i][j] = InVV[i][j];
+          }
         }
       }
     }
     
-    void SetOutEIdVV(TVec<TIntV>& OutVV) {
+    void SetOutEIdVV(const TVec<TIntV>& OutVV, const TVec<bool>& ETypeBool) {
+      for (int i = 0; i < OutVV.Len(); i++) {
+        if (ETypeBool[i] && (OutVV[i].Len() > 0)) {
+          for (int j = 0; j < OutVV[i].Len(); j++) {
+            OutEIdVV[i][j] = OutVV[i][j];
+          }
+        }
+      }
+    }
+    
+   /* void SetOutEIdVV(TVec<TIntV>& OutVV) {
       for (int i = 0; i < OutVV.Len(); i++) {
         if (OutVV[i].Len() > 0) {
           OutEIdVV[i].MoveFrom(OutVV[i]);
         }
       }
-    }
+    }*/
     
     TVec<TIntV> GetInEIdVV() { return InEIdVV; }
     TVec<TIntV> GetOutEIdVV() { return OutEIdVV; }
@@ -341,9 +353,9 @@ public:
     NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt, InEIdVV, OutEIdVV, ETypeBool);
     return NodeKeyId;
   }
-  void AddEdgesToNode(const TInt& NType, const TInt& NodeKeyId, TVec<TIntV>& InEIdVV, TVec<TIntV>& OutEIdVV) {
-    NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
-    NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
+  void AddEdgesToNode(const TInt& NType, const TInt& NodeKeyId, const TVec<TIntV>& InEIdVV, const TVec<TIntV>& OutEIdVV, const TVec<bool>& ETypeBool) {
+    NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV, ETypeBool);
+    NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV, ETypeBool);
   }
   
   
