@@ -247,7 +247,9 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       for (int KeyId = NodeHV[NType].FFirstKeyId(); KeyId < MaxKeys; KeyId++) {
         if (NodeHV[NType].IsKeyId2(KeyId)) {
           TInt NId = NodeHV[NType].GetKey(KeyId);
-          TInt NodeKeyId = Graph->AddNodeToHash(NId, NType, ETypeCnt);
+          TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVVr();
+          TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVVr();
+          TInt NodeKeyId = Graph->AddNodeToHash(NId, NType, ETypeCnt, InEIdVV, OutEIdVV, ETypeBool);
           NTypeVec.Add(NType);
           //NIdVec.Add(NId);
           NodeKeyIdVec.Add(NodeKeyId);

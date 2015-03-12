@@ -23,6 +23,19 @@ public:
         OutEIdVV.Add(TIntV());
       }
     }
+    
+    TNode(const int& NId, const int& NType, const int& ETypeCnt, const TVec<TIntV>& InEIdVV2, const TVec<TIntV>& OutEIdVV2, const TVec<bool> & ETypeBool) : Id(NId), Type(NType) {
+      InEIdVV.Reserve(ETypeCnt, ETypeCnt);
+      TInt Len1, Len2;
+      for (int i = 0; i < ETypeCnt; i++) {
+        if (ETypeBool[i]) {
+          Len1 = InEIdVV2[i].Len();
+          Len2 = OutEIdVV2[i].Len();
+          if (Len1 > 0) { InEIdVV[i].Reserve(Len1, Len1); }
+          if (Len2 > 0) { OutEIdVV[i].Reserve(Len2, Len2); }
+        }
+      }
+    }
     TNode(const TNode& Node) : Id(Node.Id), Type(Node.Type), InEIdVV(Node.InEIdVV), OutEIdVV(Node.OutEIdVV) { }
     //  TNode(TSIn& SIn) : Id(SIn), InEIdV(SIn), OutEIdV(SIn) { }
     //  void Save(TSOut& SOut) const { Id.Save(SOut); InEIdV.Save(SOut); OutEIdV.Save(SOut); }
@@ -76,6 +89,9 @@ public:
     
     TVec<TIntV> GetInEIdVV() { return InEIdVV; }
     TVec<TIntV> GetOutEIdVV() { return OutEIdVV; }
+    
+    const TVec<TIntV>& GetInEIdVVr() { return InEIdVV; }
+    const TVec<TIntV>& GetOutEIdVVr() { return OutEIdVV; }
     
     // int GetNbrEId(const int& EdgeN) const { return EdgeN<GetOutDeg()?GetOutEId(EdgeN):GetInEId(EdgeN-GetOutDeg()); }
     // bool IsInEId(const int& EId) const { return InEIdV.SearchBin(EId) != -1; }
@@ -319,10 +335,10 @@ public:
     //NodeHV[NType][NodeKeyId].SetInEIdVV(InEIdVV);
     //NodeHV[NType][NodeKeyId].SetOutEIdVV(OutEIdVV);
   }
-  TInt AddNodeToHash(const TInt& NId, const TInt& NType, const TInt& ETypeCnt) {
+  TInt AddNodeToHash(const TInt& NId, const TInt& NType, const TInt& ETypeCnt, const TVec<TIntV>& InEIdVV, const TVec<TIntV>& OutEIdVV, const TVec<bool>& ETypeBool) {
     int NodeIdx = abs((NId.GetPrimHashCd()) % NodeHV[NType].GetReservedKeyIds());
     int NodeKeyId = NodeHV[NType].AddKey13(NodeIdx, NId);
-    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt);
+    NodeHV[NType][NodeKeyId] = TNode(NId, NType, ETypeCnt, InEIdVV, OutEIdVV, ETypeBool);
     return NodeKeyId;
   }
   void AddEdgesToNode(const TInt& NType, const TInt& NodeKeyId, TVec<TIntV>& InEIdVV, TVec<TIntV>& OutEIdVV) {
