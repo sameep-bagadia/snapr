@@ -28,6 +28,8 @@ public:
       InEIdVV.Reserve(ETypeCnt, ETypeCnt);
       TInt Len1, Len2;
       for (int i = 0; i < ETypeCnt; i++) {
+        InEIdVV.Add();
+        OutEIdVV.Add();
         if (ETypeBool[i]) {
           printf("r0\n");
           Len1 = InEIdVV2[i].Len();
