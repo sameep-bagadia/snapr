@@ -29,10 +29,12 @@ public:
       TInt Len1, Len2;
       for (int i = 0; i < ETypeCnt; i++) {
         if (ETypeBool[i]) {
+          printf("r0"\n);
           Len1 = InEIdVV2[i].Len();
           Len2 = OutEIdVV2[i].Len();
-          if (Len1 > 0) { InEIdVV[i].Reserve(Len1, Len1); }
-          if (Len2 > 0) { OutEIdVV[i].Reserve(Len2, Len2); }
+          printf("r1"\n);
+          if (Len1 > 0) { printf("r2"\n); InEIdVV[i].Reserve(Len1, Len1); }
+          if (Len2 > 0) { printf("r3"\n); OutEIdVV[i].Reserve(Len2, Len2); }
         }
       }
     }
