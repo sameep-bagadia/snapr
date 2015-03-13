@@ -272,7 +272,7 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
     //TVec<TIntV>& OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVVr();
     //test[i] = InEIdVV.Len() + OutEIdVV.Len();
     //printf("%d %d\n", InEIdVV.Len(), OutEIdVV.Len());
-    Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], NodeHV[NType][KeyId].GetInEIdVVr();, NodeHV[NType][KeyId].GetOutEIdVVr();, ETypeBool);
+    Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], NodeHV[NType][KeyId].GetInEIdVVr(), NodeHV[NType][KeyId].GetOutEIdVVr(), ETypeBool);
   }
   
   TimeV[2] += omp_get_wtime() - start;
