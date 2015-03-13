@@ -26,17 +26,14 @@ public:
     
     TNode(const int& NId, const int& NType, const int& ETypeCnt, const TVec<TIntV>& InEIdVV2, const TVec<TIntV>& OutEIdVV2, const TVec<bool> & ETypeBool) : Id(NId), Type(NType) {
       InEIdVV.Reserve(ETypeCnt, ETypeCnt);
+      OutEIdVV.Reserve(ETypeCnt, ETypeCnt);
       TInt Len1, Len2;
       for (int i = 0; i < ETypeCnt; i++) {
-        InEIdVV.Add();
-        OutEIdVV.Add();
         if (ETypeBool[i]) {
-          printf("r0\n");
           Len1 = InEIdVV2[i].Len();
           Len2 = OutEIdVV2[i].Len();
-          printf("r1\n");
-          if (Len1 > 0) { printf("r2\n"); InEIdVV[i].Reserve(Len1, Len1); }
-          if (Len2 > 0) { printf("r3\n"); OutEIdVV[i].Reserve(Len2, Len2); }
+          if (Len1 > 0) { InEIdVV[i].Reserve(Len1, Len1); }
+          if (Len2 > 0) { OutEIdVV[i].Reserve(Len2, Len2); }
         }
       }
     }
