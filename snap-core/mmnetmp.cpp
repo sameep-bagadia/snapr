@@ -247,9 +247,9 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
       for (int KeyId = NodeHV[NType].FFirstKeyId(); KeyId < MaxKeys; KeyId++) {
         if (NodeHV[NType].IsKeyId2(KeyId)) {
           TInt NId = NodeHV[NType].GetKey(KeyId);
-          TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVVr();
-          TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVVr();
-          TInt NodeKeyId = Graph->AddNodeToHash(NId, NType, ETypeCnt, InEIdVV, OutEIdVV, ETypeBool);
+          //TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVVr();
+          //TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVVr();
+          TInt NodeKeyId = Graph->AddNodeToHash(NId, NType, ETypeCnt, NodeHV[NType][KeyId].GetInEIdVVr(), NodeHV[NType][KeyId].GetOutEIdVVr(), ETypeBool);
           NTypeVec.Add(NType);
           //NIdVec.Add(NId);
           NodeKeyIdVec.Add(NodeKeyId);
@@ -268,11 +268,11 @@ PSVNetMP TSVNetMP::GetSubGraphMP(TIntV NTypeV, TIntV ETypeV) {
   for (int i = 0; i < NodeCnt; i++) {
     TInt NType = NTypeVec[i];
     TInt KeyId = KeyIdVec[i];
-    TVec<TIntV> InEIdVV = NodeHV[NType][KeyId].GetInEIdVVr();
-    TVec<TIntV> OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVVr();
+    //TVec<TIntV>& InEIdVV = NodeHV[NType][KeyId].GetInEIdVVr();
+    //TVec<TIntV>& OutEIdVV = NodeHV[NType][KeyId].GetOutEIdVVr();
     //test[i] = InEIdVV.Len() + OutEIdVV.Len();
     //printf("%d %d\n", InEIdVV.Len(), OutEIdVV.Len());
-    Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], InEIdVV, OutEIdVV, ETypeBool);
+    Graph->AddEdgesToNode(NType, NodeKeyIdVec[i], NodeHV[NType][KeyId].GetInEIdVVr();, NodeHV[NType][KeyId].GetOutEIdVVr();, ETypeBool);
   }
   
   TimeV[2] += omp_get_wtime() - start;
